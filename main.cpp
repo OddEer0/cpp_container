@@ -23,7 +23,7 @@ int main() {
 	}
 
 	std::cout << tree.string() << std::endl;
-
+	std::cout << tree.contains(601) << std::endl;
 
     return 0;
 }

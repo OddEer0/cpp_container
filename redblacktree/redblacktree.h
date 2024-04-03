@@ -150,22 +150,12 @@ namespace s21 {
         const_reverse_iterator crend();
 
         // MODIFIER
-        // Вставка элемента
         std::pair<node_type, bool> insert(value_type pair);
-        // Вставка элемента или замена, если ключ уже существует
         std::pair<node_type, bool> insert_or_assign(value_type pair);
-
-        // Вставка по итератору
         template <class InputIt>
         void insert_range(InputIt first, InputIt last);
-
-        // Удаление элемента по ключу
         int erase(key_type key);
-
-        // Извлечение элемента по ключу
         std::optional<value_type> extract(key_type key);
-
-        // Очистка контейнера
         void clear();
 
         // Обмен содержимым двух деревьев
@@ -175,33 +165,30 @@ namespace s21 {
         // void merge(RedBlackTree& other);
 
         // LOOKUP
-        // size_type count(const key_type& key) const;
-
         // Поиск элемента с заданным ключом
-        // iterator find(const key_type& key);
-        // const_iterator find(const key_type& key) const;
-
-        // Проверка наличия элемента с заданным ключом
-        // bool contains(const key_type& key) const; // C++20
+        iterator find(const key_type& key);
+        const_iterator find(const key_type& key) const;
+        bool contains(key_type key);
 
         // Возвращает диапазон элементов с заданным ключом
-        // std::pair<iterator, iterator> equal_range(const key_type& key);
-        // std::pair<const_iterator, const_iterator> equal_range(const key_type& key) const;
+        std::pair<iterator, iterator> equal_range(const key_type& key);
+        std::pair<const_iterator, const_iterator> equal_range(const key_type& key) const;
 
         // Возвращает итератор на первый элемент не меньше заданного ключа
-        // iterator lower_bound(const key_type& key);
-        // const_iterator lower_bound(const key_type& key) const;
+        iterator lower_bound(const key_type& key);
+        const_iterator lower_bound(const key_type& key) const;
 
         // Возвращает итератор на первый элемент больше заданного ключа
-        // iterator upper_bound(const key_type& key);
-        // const_iterator upper_bound(const key_type& key) const;
+        iterator upper_bound(const key_type& key);
+        const_iterator upper_bound(const key_type& key) const;
 
         // OBSERVERS (getters and setters)
-        // key_compare key_comp();
-        // key_compare value_comp();
-        // allocator_type get_allocator();
+        key_compare key_comp();
+        key_compare value_comp();
+        allocator_type get_allocator();
     };
 
+    #include "observer.tpp"
     #include "print.tpp"
     #include "utils.tpp"
     #include "node.tpp"
@@ -211,6 +198,7 @@ namespace s21 {
     #include "capacity.tpp"
     #include "balance.tpp"
     #include "modifier.tpp"
+    #include "lookup.tpp"
 }
 
 #endif
