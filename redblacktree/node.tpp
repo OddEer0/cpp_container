@@ -20,7 +20,7 @@ typename RedBlackTree<Key, T, Compare, Allocator>::key_type RedBlackTree<Key, T,
 
 template <class Key, class T, class Compare, class Allocator>
 typename RedBlackTree<Key, T, Compare, Allocator>::mapped_value RedBlackTree<Key, T, Compare, Allocator>::Node::getValue() {
-    return data_->value_;   
+    return data_->second;
 }
 
 template <class Key, class T, class Compare, class Allocator>
@@ -65,9 +65,20 @@ bool RedBlackTree<Key, T, Compare, Allocator>::Node::isRightNode() {
 }
 
 template <class Key, class T, class Compare, class Allocator>
+bool RedBlackTree<Key, T, Compare, Allocator>::Node::isNotChild() {
+    if (left_ == nullptr && right_ == nullptr) {
+        return true;
+    }
+    return false;
+}
+
+template <class Key, class T, class Compare, class Allocator>
 typename RedBlackTree<Key, T, Compare, Allocator>::Node::node_type RedBlackTree<Key, T, Compare, Allocator>::Node::getChildOrNull() {
     if (left_ != nullptr) {
         return left_;
+    }
+    if (right_ == nullptr) {
+        return new Node();
     }
     return right_;
 }

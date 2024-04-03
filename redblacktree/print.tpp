@@ -25,7 +25,7 @@ void RedBlackTree<Key, T, Compare, Allocator>::output(node_type node, std::strin
     } else {
         *str += "┌── ";
     }
-    *str += "Key: " + std::to_string(node->data_->first) + ", Value: " + std::to_string(node->data_->second) + "\n";
+    *str += "Color: " + std::string(node->color_ == BLACK ? "BLACK" : "RED") + ", Key: " + std::to_string(node->data_->first) + ", Value: " + std::to_string(node->data_->second) + "\n";
     if (node->left_ != nullptr) {
         std::string newPrefix = prefix;
         if (isTail) {

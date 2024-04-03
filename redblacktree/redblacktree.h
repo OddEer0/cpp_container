@@ -29,8 +29,7 @@ namespace s21 {
         using pointer = typename std::allocator_traits<Allocator>::pointer;
         using const_pointer = typename std::allocator_traits<Allocator>::const_pointer;
 
-    // PRIVATE CLASSES
-
+    // INNER CLASSES
     public:
         class Node {
         public:
@@ -54,11 +53,11 @@ namespace s21 {
             bool isRightNode();
             int getChildrenCount();
             node_type getChildOrNull();
+            bool isNotChild();
         };
 
         using node_type = Node*;
 
-    private:
         class Iterator {
         private:
             RedBlackTree<Key, T, Compare, Allocator> *tree_;
@@ -66,43 +65,36 @@ namespace s21 {
             int position_;
             bool is_reverse_;
 
-            // iterator next();
-            // iterator prev();
-
         public:
             Iterator(RedBlackTree<Key, T, Compare, Allocator> *tree, node_type node, int position = START, bool isReverse = false)
                 : tree_(tree), node_(node), position_(position), is_reverse_(isReverse) {}
+            ~Iterator() {};
+            Iterator(const Iterator& other) = default;
+            Iterator& operator=(const Iterator& other) = default;
 
-            void setValue(mapped_value value) {
-                node_->data_->second = value;
-            }
-        //     ~RedBlackTreeIterator() {}
-        //     RedBlackTreeIterator(const RedBlackTreeIterator& other) = default;
-            // Iterator& operator=(const RedBlackTreeIterator& other) = default;
-        //     bool operator==(const_iterator other) const {
-        //         return tree_ == other.tree && node.key() == other.node.key();
-        //     }
-        //     bool operator!=(const_iterator other) const {
-        //         return node.key() != other.node.key();
-        //     }
+            bool operator==(const Iterator& other);
+            bool operator!=(const Iterator& other);
 
-        //     RedBlackTreeIterator& operator++();
-        //     RedBlackTreeIterator& operator--();
-        //     T& operator*();
-        //     T* operator->();
+            Iterator next();
+            Iterator prev();
 
-        //     RedBlackTreeNode<Key, T>* node();
-        //     void start();
-        //     void end();
-        //     RedBlackTreeIterator& first();
-        //     RedBlackTreeIterator& last();
+            Iterator operator++();
+            Iterator operator--();
+            T& operator*();
+            T* operator->();
+
+            void start();
+            void end();
+            Iterator first();
+            Iterator last();
         };
 
     public:
-        using iterator = Iterator*;
-        using const_iterator = const Iterator*;
-        using reverse_iterator = std::reverse_iterator<iterator>;
-        using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+        using piterator = Iterator*;
+        using iterator = Iterator;
+        using const_iterator = const Iterator;
+        using reverse_iterator = iterator;
+        using const_reverse_iterator = const_iterator;
 
     private:
         node_type root_;
@@ -112,12 +104,13 @@ namespace s21 {
 
         // Utils
         node_type getNode(key_type &key);
+        void clearRecursive(node_type node);
 
         // Balance tree
         void balanceInsert(node_type new_node);
         void leftRotate(node_type node);
         void rightRotate(node_type node);
-        void swapNode(node_type to, node_type from);
+        void swapNode(node_type to, node_type from, bool isNull);
         void balanceRemove(node_type node);
         node_type getRightSwappedNode(node_type node);
         bool getColor(node_type node);
@@ -145,41 +138,35 @@ namespace s21 {
         mapped_value operator[](key_type key);
 
         // ITERATOR
-        // node_type right();
-        // node_type left();
-        // iterator begin();
-        // iterator end();
-        // const_iterator cbegin();
-        // const_iterator cend();
-        // reverse_iterator rbegin();
-        // reverse_iterator rend();
-        // const_reverse_iterator crbegin();
-        // const_reverse_iterator crend();
+        node_type right();
+        node_type left();
+        iterator begin();
+        iterator end();
+        const_iterator cbegin();
+        const_iterator cend();
+        reverse_iterator rbegin();
+        reverse_iterator rend();
+        const_reverse_iterator crbegin();
+        const_reverse_iterator crend();
 
         // MODIFIER
         // Вставка элемента
-        std::pair<iterator, bool> insert(value_type pair);
+        std::pair<node_type, bool> insert(value_type pair);
         // Вставка элемента или замена, если ключ уже существует
-        std::pair<iterator, bool> insert_or_assign(value_type pair);
+        std::pair<node_type, bool> insert_or_assign(value_type pair);
 
         // Вставка по итератору
-        // template <class InputIt>
-        // void insert_range(InputIt first, InputIt last); 
-
-        // Попытка вставки элемента с использованием подсказки
-        // iterator emplace_hint(const_iterator hint, const key_type& key, const mapped_value& value);
-
-        // Попытка вставки элемента или его замены, если ключ уже существует
-        // std::pair<iterator, bool> try_emplace(const key_type& key, const mapped_value& value);
+        template <class InputIt>
+        void insert_range(InputIt first, InputIt last);
 
         // Удаление элемента по ключу
-        // void erase(const key_type& key);
+        int erase(key_type key);
 
         // Извлечение элемента по ключу
-        // std::optional<value_type> extract(const key_type& key);
+        std::optional<value_type> extract(key_type key);
 
         // Очистка контейнера
-        // void clear();
+        void clear();
 
         // Обмен содержимым двух деревьев
         // void swap(RedBlackTree& other);
@@ -218,6 +205,7 @@ namespace s21 {
     #include "print.tpp"
     #include "utils.tpp"
     #include "node.tpp"
+    #include "iterator.tpp"
     #include "constructor.tpp"
     #include "element_access.tpp"
     #include "capacity.tpp"

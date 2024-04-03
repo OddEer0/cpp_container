@@ -41,13 +41,21 @@ void RedBlackTree<Key, T, Compare, Allocator>::balanceInsert(node_type newNode) 
 }
 
 template <class Key, class T, class Compare, class Allocator>
-void RedBlackTree<Key, T, Compare, Allocator>::swapNode(node_type to, node_type from) {
+void RedBlackTree<Key, T, Compare, Allocator>::swapNode(node_type to, node_type from, bool isNull) {
     if (to == root_) {
         root_ = from;
     } else if (to->isLeftNode()) {
-        to->parent_->left_ = from;
+        if (isNull) {
+            to->parent_->left_ = nullptr;
+        } else {
+            to->parent_->left_ = from;
+        }
     } else {
-        to->parent_->right_ = from;
+        if (isNull) {
+            to->parent_->right_ = nullptr;    
+        } else {
+            to->parent_->right_ = from;
+        }
     }
     from->parent_ = to->parent_;
 }
@@ -96,17 +104,17 @@ void RedBlackTree<Key, T, Compare, Allocator>::balanceRemove(node_type node) {
         node_type brother = nullptr;
         if (node->isLeftNode()) {
             brother = node->parent_->right_;
-            if (brother->isRed()) {
+            if (getColor(brother) == RED) {
                 brother->color_ = BLACK;
                 node->parent_->color_ = RED;
                 leftRotate(node->parent_);
                 brother = node->parent_->right_;
             }
-            if (brother->left_->isBlack() && brother->right_->isBlack()) {
+            if (getColor(brother->left_) == BLACK && getColor(brother->right_) == BLACK) {
                 brother->color_ = RED;
                 node = node->parent_;
             } else {
-                if (brother->right_->isBlack()) {
+                if (getColor(brother->right_) == BLACK) {
                     brother->left_->color_ = BLACK;
                     brother->color_ = RED;
                     rightRotate(brother);
@@ -120,17 +128,17 @@ void RedBlackTree<Key, T, Compare, Allocator>::balanceRemove(node_type node) {
             }
         } else {
             brother = node->parent_->left_;
-            if (brother->isRed()) {
+            if (getColor(brother) == RED) {
                 brother->color_ = BLACK;
                 node->parent_->color_ = RED;
                 rightRotate(node->parent_);
                 brother = node->parent_->left_;
             }
-            if (brother->left_->isBlack() && brother->right_->isBlack()) {
+            if (getColor(brother->left_) == BLACK && getColor(brother->right_) == BLACK) {
                 brother->color_ = RED;
                 node = node->parent_;
             } else {
-                if (brother->left_->isBlack()) {
+                if (getColor(brother->left_) == BLACK) {
                     brother->right_->color_ = BLACK;
                     brother->color_ = RED;
                     leftRotate(brother);
@@ -149,29 +157,44 @@ void RedBlackTree<Key, T, Compare, Allocator>::balanceRemove(node_type node) {
 
 template <class Key, class T, class Compare, class Allocator>
 typename RedBlackTree<Key, T, Compare, Allocator>::node_type RedBlackTree<Key, T, Compare, Allocator>::getRightSwappedNode(node_type node) {
-    node_type current = root_;
+    node_type current = node;
     while (current != nullptr) {
         int childrenCount = current->getChildrenCount();
         if (childrenCount == 0) {
             return current;
         }
         if (childrenCount == 2) {
-            if (cmp_(current->left_->data_.first, current->data_.first)) {
+            if (cmp_(current->left_->data_->first, current->data_->first)) {
                 current = current->left_;
             } else {
                 current = current->right_;
             }
-        } else if (current->right_ == nullptr) {
-            if (cmp_(current->left_->data_.first, current->data_.first)) {
-                current = current->left_;
-            } else {
-                return current;
-            }
-        } else if (cmp_(current->right_->key, current->data_.first)) {
-            current = current->right_;
         } else {
-            return current;
+            if (current->right_ == nullptr) {
+                if (cmp_(current->left_->data_->first, current->data_->first)) {
+                    current = current->left_;
+                } else {
+                    return current;
+                }
+            } else {
+                if (cmp_(current->right_->data_->first, current->data_->first)) {
+                    current = current->right_;
+                } else {
+                    return current;
+                }
+            } 
         }
+        // else if (current->right_ == nullptr) {
+        //     if (cmp_(current->left_->data_->first, current->data_->first)) {
+        //         current = current->left_;
+        //     } else {
+        //         return current;
+        //     }
+        // } else if (cmp_(current->right_->data_->first, current->data_->first)) {
+        //     current = current->right_;
+        // } else {
+        //     return current;
+        // }
     }
 
     return node;

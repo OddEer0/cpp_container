@@ -1,8 +1,9 @@
 #include <iostream>
 #include "redblacktree/redblacktree.h"
+#include <map>
 
 int main() {
-    // s21::RedBlackTree<int, int> tree;
+    s21::RedBlackTree<int, int> tree;
     // tree.insert(std::make_pair( 1000, 1000));
 	// tree.insert(std::make_pair( 1050, 1050));
 	// tree.insert(std::make_pair( 950, 950));
@@ -17,27 +18,12 @@ int main() {
 	// tree.insert(std::make_pair( 600, 600));
 	// tree.insert(std::make_pair( 650, 650));
 
-    // tree.insert_or_assign(std::make_pair( 650, 6650));
+	for (int i = 1; i <= 600; i++) {
+		tree.insert(std::make_pair(i, i));
+	}
 
-    // std::cout << tree.empty() << std::endl;
-    // std::cout << tree.size() << std::endl;
-    // std::cout << tree.max_size() << std::endl;
+	std::cout << tree.string() << std::endl;
 
-    // std::cout << tree.string() << std::endl;
-
-	s21::RedBlackTree<int, int> tree2 = {
-		{100, 100},
-		{150, 150},
-		{50, 50},
-		{200, 200},
-		{250, 250},
-	};
-
-	std::cout << tree2.string() << std::endl;
-
-	std::cout << tree2[50] << std::endl;
-
-	std::cout << tree2.at(200) << std::endl;
 
     return 0;
 }

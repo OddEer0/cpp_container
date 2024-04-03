@@ -15,3 +15,14 @@ typename RedBlackTree<Key, T, Compare, Allocator>::node_type RedBlackTree<Key, T
 
     return nullptr;
 }
+
+template <class Key, class T, class Compare, class Allocator>
+void RedBlackTree<Key, T, Compare, Allocator>::clearRecursive(node_type node) {
+    if (node != nullptr) {
+        clearRecursive(node->left_);
+        clearRecursive(node->right_);
+        allocator_.deallocate(node->data_, 1);
+        delete node;
+        node = nullptr;
+    }
+}

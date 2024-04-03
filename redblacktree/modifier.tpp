@@ -1,16 +1,12 @@
 template <class Key, class T, class Compare, class Allocator>
-std::pair<typename RedBlackTree<Key, T, Compare, Allocator>::iterator, bool> RedBlackTree<Key, T, Compare, Allocator>::insert(value_type pair) {
+std::pair<typename RedBlackTree<Key, T, Compare, Allocator>::node_type, bool> RedBlackTree<Key, T, Compare, Allocator>::insert(value_type pair) {
     node_type current = root_;
     node_type parent = nullptr;
-
-    std::cout << pair.first << std::endl;
-
 
     while (current != nullptr) {
         parent = current;
         if (pair.first == current->data_->first) {
-            iterator it = new Iterator(this, current, PROCESS);
-            return std::make_pair(it, false);
+            return std::make_pair(current, false);
         }
         if (cmp_(pair.first, current->data_->first)) {
             current = current->left_;
@@ -38,15 +34,73 @@ std::pair<typename RedBlackTree<Key, T, Compare, Allocator>::iterator, bool> Red
     balanceInsert(newNode);
 
     length_++;
-    iterator it = new Iterator(this, current, PROCESS);
-    return std::make_pair(it, true);
+    return std::make_pair(newNode, true);
 }
 
 template <class Key, class T, class Compare, class Allocator>
-std::pair<typename RedBlackTree<Key, T, Compare, Allocator>::iterator, bool> RedBlackTree<Key, T, Compare, Allocator>::insert_or_assign(value_type pair) {
-    std::pair<iterator, bool> result = insert(pair);
+std::pair<typename RedBlackTree<Key, T, Compare, Allocator>::node_type, bool> RedBlackTree<Key, T, Compare, Allocator>::insert_or_assign(value_type pair) {
+    std::pair<node_type, bool> result = insert(pair);
     if (!result.second) {
-        result.first->setValue(pair.second);
+        result.first->data_->second = pair.second;
     }
     return result;
+}
+
+template <class InputIt>
+void insert_range(InputIt first, InputIt last) {
+    for (auto it = first; first != last; ++first) {
+        insert(*it);
+    }
+}
+
+template <class Key, class T, class Compare, class Allocator>
+int RedBlackTree<Key, T, Compare, Allocator>::erase(key_type key) {
+    std::optional<value_type> res = extract(key);
+    if (res.has_value()) {
+        return 1;
+    }
+    return 0;
+}
+
+template <class Key, class T, class Compare, class Allocator>
+std::optional<typename RedBlackTree<Key, T, Compare, Allocator>::value_type> RedBlackTree<Key, T, Compare, Allocator>::extract(key_type key) {
+    node_type deletedNode = getNode(key);
+    if (deletedNode == nullptr) {
+        return std::nullopt;
+    }
+    key_type keyRes = deletedNode->data_->first;
+    mapped_value valueRes = deletedNode->data_->second;
+
+    node_type child = nullptr;
+    bool removedColor = deletedNode->color_;
+    if (deletedNode->getChildrenCount() < 2) {
+        child = deletedNode->getChildOrNull();
+        swapNode(deletedNode, child, deletedNode->isNotChild());
+        allocator_.deallocate(deletedNode->data_, 1);
+        delete deletedNode;
+        deletedNode = nullptr;
+    } else {
+        node_type swappedRight = getRightSwappedNode(deletedNode->right_);
+        const_cast<Key&>(deletedNode->data_->first) = swappedRight->data_->first;
+        deletedNode->data_->second = swappedRight->data_->second;
+        removedColor = swappedRight->color_;
+        child = swappedRight->getChildOrNull();
+        swapNode(swappedRight, child, swappedRight->isNotChild());
+        allocator_.deallocate(swappedRight->data_, 1);
+        delete swappedRight;
+        swappedRight = nullptr;
+    }
+
+    if (removedColor == BLACK) {
+        balanceRemove(child);
+    }
+    length_--;
+    return std::make_pair(keyRes, valueRes);
+}
+
+template <class Key, class T, class Compare, class Allocator>
+void RedBlackTree<Key, T, Compare, Allocator>::clear() {
+    clearRecursive(root_);
+    root_ = nullptr;
+    length_ = 0;
 }
