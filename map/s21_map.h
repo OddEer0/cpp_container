@@ -98,27 +98,37 @@ namespace s21 {
         }
 
         // MODIFIER
+        // Вствка элемента
         std::pair<node_type, bool> insert(value_type pair) {
             return tree_.insert(pair);
         }
+
+        // Вставка элемента, или перезапись значения. Если элемент с заданным ключем уже существует
         std::pair<node_type, bool> insert_or_assign(value_type pair) {
             return tree_.insert_or_assign(pair);
         }
+
+        // Вставка элементов по итератору
         template <class InputIt>
         void insert_range(InputIt first, InputIt last) {
             tree_.insert_range(first, last);
         }
+
+        // Удаление по ключу. возвращает кол-во удаленных элементов
         int erase(key_type key) {
             return tree_.erase(key);
         }
+
+        // Удвление по ключу. Возвращает пару ключ значение при успешном удалений. Если же элемента не существует возвращает std::nullopt
         std::optional<value_type> extract(key_type key) {
             return tree_.extract(key);
         }
+
         void clear() {
             tree_.clear();
         }
 
-         // Обмен содержимым двух деревьев
+        // Обмен содержимым двух деревьев
         // void swap(RedBlackTree& other);
 
         // Слияние двух деревьев
@@ -143,12 +153,17 @@ namespace s21 {
         // const_iterator upper_bound(const key_type& key) const;
 
         // OBSERVERS (getters and setters)
+        // Возвращает функцию компаратор
         key_compare key_comp() {
             return tree_.key_comp();
         }
+
+        // Возвращает функцию компаратор. По сути идентичен key_comp нахера эта функция нужна не ясно. Наверное этот метод нахер удалю. Не тестить
         key_compare value_comp() {
             return tree_.value_comp();
         }
+
+        // Возвращает аллокатор
         allocator_type get_allocator() {
             return tree_.get_allocator();
         }
