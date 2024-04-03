@@ -3,8 +3,9 @@ std::string RedBlackTree<Key, T, Compare, Allocator>::string() {
     std::string str = "RedBlackTree\n";
     if (!empty()) {
         output(root_, "", true, &str);
+    } else {
+        str += "empty\n";
     }
-
     return str;
 }
 

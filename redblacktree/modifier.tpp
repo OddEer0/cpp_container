@@ -70,6 +70,13 @@ std::optional<typename RedBlackTree<Key, T, Compare, Allocator>::value_type> Red
     }
     key_type keyRes = deletedNode->data_->first;
     mapped_value valueRes = deletedNode->data_->second;
+    if (deletedNode == root_ && length_ == 1) {
+        allocator_.deallocate(root_->data_, 1);
+        delete root_;
+        root_ = nullptr;
+        length_--;
+        return std::make_pair(keyRes, valueRes);
+    }
     bool isNotChild = false;
     bool isLeftNode = true;
 
@@ -77,9 +84,11 @@ std::optional<typename RedBlackTree<Key, T, Compare, Allocator>::value_type> Red
     bool removedColor = deletedNode->color_;
     if (deletedNode->getChildrenCount() < 2) {
         child = deletedNode->getChildOrNull();
-        isNotChild = deletedNode->isLeftNode();
+        isNotChild = deletedNode->isNotChild();
         if (isNotChild) {
             isLeftNode = deletedNode->isLeftNode();
+        } else {
+            isLeftNode = child->isLeftNode();
         }
         swapNode(deletedNode, child, isNotChild);
         allocator_.deallocate(deletedNode->data_, 1);
@@ -91,9 +100,11 @@ std::optional<typename RedBlackTree<Key, T, Compare, Allocator>::value_type> Red
         deletedNode->data_->second = swappedRight->data_->second;
         removedColor = swappedRight->color_;
         child = swappedRight->getChildOrNull();
-        isNotChild = deletedNode->isLeftNode();
+        isNotChild = swappedRight->isNotChild();
         if (isNotChild) {
             isLeftNode = swappedRight->isLeftNode();
+        } else {
+            isLeftNode = child->isLeftNode();
         }
         swapNode(swappedRight, child, isNotChild);
         allocator_.deallocate(swappedRight->data_, 1);
@@ -103,6 +114,13 @@ std::optional<typename RedBlackTree<Key, T, Compare, Allocator>::value_type> Red
 
     if (removedColor == BLACK) {
         balanceRemove(child, isLeftNode);
+        if (isNotChild) {
+            if (child->parent_->left_ == child) {
+                child->parent_->left_ = nullptr;
+            } else {
+                child->parent_->right_ = nullptr;
+            }
+        }
     }
     length_--;
     return std::make_pair(keyRes, valueRes);
