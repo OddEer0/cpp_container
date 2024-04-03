@@ -99,10 +99,10 @@ void RedBlackTree<Key, T, Compare, Allocator>::leftRotate(node_type node) {
 }
 
 template <class Key, class T, class Compare, class Allocator>
-void RedBlackTree<Key, T, Compare, Allocator>::balanceRemove(node_type node) {
+void RedBlackTree<Key, T, Compare, Allocator>::balanceRemove(node_type node, bool isLeftNode) {
     while (node != root_ && node->isBlack()) {
         node_type brother = nullptr;
-        if (node->isLeftNode()) {
+        if (isLeftNode) {
             brother = node->parent_->right_;
             if (getColor(brother) == RED) {
                 brother->color_ = BLACK;
@@ -110,6 +110,7 @@ void RedBlackTree<Key, T, Compare, Allocator>::balanceRemove(node_type node) {
                 leftRotate(node->parent_);
                 brother = node->parent_->right_;
             }
+
             if (getColor(brother->left_) == BLACK && getColor(brother->right_) == BLACK) {
                 brother->color_ = RED;
                 node = node->parent_;
@@ -184,17 +185,6 @@ typename RedBlackTree<Key, T, Compare, Allocator>::node_type RedBlackTree<Key, T
                 }
             } 
         }
-        // else if (current->right_ == nullptr) {
-        //     if (cmp_(current->left_->data_->first, current->data_->first)) {
-        //         current = current->left_;
-        //     } else {
-        //         return current;
-        //     }
-        // } else if (cmp_(current->right_->data_->first, current->data_->first)) {
-        //     current = current->right_;
-        // } else {
-        //     return current;
-        // }
     }
 
     return node;

@@ -40,7 +40,7 @@ namespace s21 {
             node_type left_;
             node_type right_;
 
-            Node() {};
+            Node() : color_(BLACK) {};
             Node(std::pair<const key_type, mapped_value>* data) : data_(data), color_(RED), parent_(nullptr), left_(nullptr), right_(nullptr) {};
             key_type getKey();
             mapped_value getValue();
@@ -111,7 +111,7 @@ namespace s21 {
         void leftRotate(node_type node);
         void rightRotate(node_type node);
         void swapNode(node_type to, node_type from, bool isNull);
-        void balanceRemove(node_type node);
+        void balanceRemove(node_type node, bool isLeftNode);
         node_type getRightSwappedNode(node_type node);
         bool getColor(node_type node);
 

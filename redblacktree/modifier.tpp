@@ -70,12 +70,18 @@ std::optional<typename RedBlackTree<Key, T, Compare, Allocator>::value_type> Red
     }
     key_type keyRes = deletedNode->data_->first;
     mapped_value valueRes = deletedNode->data_->second;
+    bool isNotChild = false;
+    bool isLeftNode = true;
 
     node_type child = nullptr;
     bool removedColor = deletedNode->color_;
     if (deletedNode->getChildrenCount() < 2) {
         child = deletedNode->getChildOrNull();
-        swapNode(deletedNode, child, deletedNode->isNotChild());
+        isNotChild = deletedNode->isLeftNode();
+        if (isNotChild) {
+            isLeftNode = deletedNode->isLeftNode();
+        }
+        swapNode(deletedNode, child, isNotChild);
         allocator_.deallocate(deletedNode->data_, 1);
         delete deletedNode;
         deletedNode = nullptr;
@@ -85,14 +91,18 @@ std::optional<typename RedBlackTree<Key, T, Compare, Allocator>::value_type> Red
         deletedNode->data_->second = swappedRight->data_->second;
         removedColor = swappedRight->color_;
         child = swappedRight->getChildOrNull();
-        swapNode(swappedRight, child, swappedRight->isNotChild());
+        isNotChild = deletedNode->isLeftNode();
+        if (isNotChild) {
+            isLeftNode = swappedRight->isLeftNode();
+        }
+        swapNode(swappedRight, child, isNotChild);
         allocator_.deallocate(swappedRight->data_, 1);
         delete swappedRight;
         swappedRight = nullptr;
     }
 
     if (removedColor == BLACK) {
-        balanceRemove(child);
+        balanceRemove(child, isLeftNode);
     }
     length_--;
     return std::make_pair(keyRes, valueRes);
