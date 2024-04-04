@@ -192,8 +192,8 @@ namespace s21 {
 
         // OBSERVERS (getters and setters)
         key_compare key_comp();
-        key_compare value_comp();
         allocator_type get_allocator();
+        mapped_value root();
     };
 
     #include "observer.tpp"

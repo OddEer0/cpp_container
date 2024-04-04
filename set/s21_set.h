@@ -100,6 +100,21 @@ namespace s21 {
                 tree_.insert(std::make_pair(item, false));
             }
         }
+        set(set& other) {
+            tree_ = RedBlackTree<Key, bool, Compare, Allocator>(other.tree_);
+        }
+        set(set&& other) {
+            tree_ = RedBlackTree<Key, bool, Compare, Allocator>(std::move(other.tree_));
+        }
+        set& operator=(set &&other) {
+            tree_ = std::move(other.tree_);
+            return *this;
+        }
+        // Оператор присваивания перемещения
+        set& operator=(set &other) {
+            tree_ = other.tree_;
+            return *this;
+        }
 
         // PRINT SET
         std::string string() {

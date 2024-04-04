@@ -4,8 +4,8 @@ typename RedBlackTree<Key, T, Compare, Allocator>::key_compare RedBlackTree<Key,
 }
 
 template <class Key, class T, class Compare, class Allocator>
-typename RedBlackTree<Key, T, Compare, Allocator>::key_compare RedBlackTree<Key, T, Compare, Allocator>::value_comp() {
-    return cmp_;
+typename RedBlackTree<Key, T, Compare, Allocator>::mapped_value RedBlackTree<Key, T, Compare, Allocator>::root() {
+    return root_->data_->second;
 }
 
 template <class Key, class T, class Compare, class Allocator>

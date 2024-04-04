@@ -5,4 +5,6 @@
 
 #include "../s21_containers.h"
 
+s21::map<int, int> initMap();
+
 #endif

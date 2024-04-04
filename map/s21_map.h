@@ -175,14 +175,13 @@ namespace s21 {
             return tree_.key_comp();
         }
 
-        // Возвращает функцию компаратор. По сути идентичен key_comp нахера эта функция нужна не ясно. Наверное этот метод нахер удалю. Не тестить
-        key_compare value_comp() {
-            return tree_.value_comp();
-        }
-
         // Возвращает аллокатор
         allocator_type get_allocator() {
             return tree_.get_allocator();
+        }
+
+        mapped_value root() {
+            return tree_.root();
         }
     };
 }
