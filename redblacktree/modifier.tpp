@@ -46,10 +46,12 @@ std::pair<typename RedBlackTree<Key, T, Compare, Allocator>::node_type, bool> Re
     return result;
 }
 
+template <class Key, class T, class Compare, class Allocator>
 template <class InputIt>
-void insert_range(InputIt first, InputIt last) {
-    for (auto it = first; first != last; ++first) {
-        insert(*it);
+void RedBlackTree<Key, T, Compare, Allocator>::insert_range(InputIt first, InputIt last) {
+    for (auto it = first; it != last; ++it) {
+        node_type node = it.getNode();
+        insert(std::make_pair(node->data_->first, node->data_->second));
     }
 }
 

@@ -118,11 +118,16 @@ namespace s21 {
     public:
         RedBlackTree();
         RedBlackTree(std::initializer_list<value_type> const &items);
-        // RedBlackTree(const RedBlackTree &m);
-        // RedBlackTree(RedBlackTree &&m);
-        // ~RedBlackTree();
-        // RedBlackTree& operator=(RedBlackTree &&m);
-        // RedBlackTree& operator=(const RedBlackTree &m);
+        // На самом деле если скопировать по итератору. Она идентичной не будет по структуре. Для этого нужно делать специальный метод для копирования
+        RedBlackTree(RedBlackTree &other);
+        // Конструктор перемещение
+        RedBlackTree(RedBlackTree&& other);
+        // Деструктор
+        ~RedBlackTree();
+        // Оператор присваивания
+        RedBlackTree& operator=(RedBlackTree &&other);
+        // Оператор присваивания перемещения
+        RedBlackTree& operator=(RedBlackTree &other);
 
         // Utils
         node_type getNode(key_type &key);

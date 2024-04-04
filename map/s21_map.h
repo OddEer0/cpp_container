@@ -40,6 +40,21 @@ namespace s21 {
         map(std::initializer_list<value_type> const &items) {
             tree_ = RedBlackTree<Key, T, Compare, Allocator>(items);
         }
+        map(map& other) {
+            tree_ = RedBlackTree<Key, T, Compare, Allocator>(other.tree_);
+        }
+        map(map&& other) {
+            tree_ = RedBlackTree<Key, T, Compare, Allocator>(std::move(other.tree_));
+        }
+        map& operator=(map &&other) {
+            tree_ = std::move(other.tree_);
+            return *this;
+        }
+        // Оператор присваивания перемещения
+        map& operator=(map &other) {
+            tree_ = other.tree_;
+            return *this;
+        }
 
         // PRINT MAP
         std::string string() {
