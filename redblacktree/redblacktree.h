@@ -82,6 +82,7 @@ namespace s21 {
             Iterator operator--();
             T& operator*();
             T* operator->();
+            node_type getNode();
 
             void start();
             void end();
@@ -103,7 +104,6 @@ namespace s21 {
         allocator_type allocator_;
 
         // Utils
-        node_type getNode(key_type &key);
         void clearRecursive(node_type node);
 
         // Balance tree
@@ -123,6 +123,9 @@ namespace s21 {
         // ~RedBlackTree();
         // RedBlackTree& operator=(RedBlackTree &&m);
         // RedBlackTree& operator=(const RedBlackTree &m);
+
+        // Utils
+        node_type getNode(key_type &key);
 
         // PRINT
         std::string string();

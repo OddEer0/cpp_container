@@ -138,7 +138,9 @@ namespace s21 {
         // Поиск элемента с заданным ключом
         // iterator find(const key_type& key);
         // const_iterator find(const key_type& key) const;
-        // bool contains(key_type key);
+        bool contains(key_type key) {
+            return tree_.contains(key);
+        }
 
         // // Возвращает диапазон элементов с заданным ключом
         // std::pair<iterator, iterator> equal_range(const key_type& key);

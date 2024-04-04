@@ -32,6 +32,11 @@ T& RedBlackTree<Key, T, Compare, Allocator>::Iterator::operator*() {
 }
 
 template <class Key, class T, class Compare, class Allocator>
+typename RedBlackTree<Key, T, Compare, Allocator>::node_type RedBlackTree<Key, T, Compare, Allocator>::Iterator::getNode() {
+    return node_;
+}
+
+template <class Key, class T, class Compare, class Allocator>
 T* RedBlackTree<Key, T, Compare, Allocator>::Iterator::operator->() {
     return &(node_->data_->second);
 }
