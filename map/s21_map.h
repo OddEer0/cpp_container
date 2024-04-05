@@ -151,8 +151,12 @@ namespace s21 {
 
         // LOOKUP
         // Поиск элемента с заданным ключом
-        // iterator find(const key_type& key);
-        // const_iterator find(const key_type& key) const;
+        iterator find(key_type key) {
+            return tree_.find(key);
+        }
+        const_iterator find(key_type key) const {
+            return tree_.find(key);
+        };
         bool contains(key_type key) {
             return tree_.contains(key);
         }
@@ -170,12 +174,10 @@ namespace s21 {
         // const_iterator upper_bound(const key_type& key) const;
 
         // OBSERVERS (getters and setters)
-        // Возвращает функцию компаратор
         key_compare key_comp() {
             return tree_.key_comp();
         }
 
-        // Возвращает аллокатор
         allocator_type get_allocator() {
             return tree_.get_allocator();
         }

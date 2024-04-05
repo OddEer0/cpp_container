@@ -174,21 +174,21 @@ namespace s21 {
 
         // LOOKUP
         // Поиск элемента с заданным ключом
-        iterator find(const key_type& key);
-        const_iterator find(const key_type& key) const;
+        iterator find(key_type key);
+        const_iterator find(key_type key) const;
         bool contains(key_type key);
 
         // Возвращает диапазон элементов с заданным ключом
-        std::pair<iterator, iterator> equal_range(const key_type& key);
-        std::pair<const_iterator, const_iterator> equal_range(const key_type& key) const;
+        // std::pair<iterator, iterator> equal_range(const key_type& key);
+        // std::pair<const_iterator, const_iterator> equal_range(const key_type& key) const;
 
         // Возвращает итератор на первый элемент не меньше заданного ключа
-        iterator lower_bound(const key_type& key);
-        const_iterator lower_bound(const key_type& key) const;
+        // iterator lower_bound(const key_type& key);
+        // const_iterator lower_bound(const key_type& key) const;
 
         // Возвращает итератор на первый элемент больше заданного ключа
-        iterator upper_bound(const key_type& key);
-        const_iterator upper_bound(const key_type& key) const;
+        // iterator upper_bound(const key_type& key);
+        // const_iterator upper_bound(const key_type& key) const;
 
         // OBSERVERS (getters and setters)
         key_compare key_comp();
