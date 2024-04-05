@@ -13,7 +13,7 @@ template <class Key, class T, class Compare, class Allocator>
 typename RedBlackTree<Key, T, Compare, Allocator>::mapped_value& RedBlackTree<Key, T, Compare, Allocator>::at(key_type key) {
     node_type node = getNode(key);
     if (node == nullptr) {
-        throw std::out_of_range("Key not found in RedBlackTree");
+        throw std::out_of_range("Key not found");
     }
     return node->data_->second;
 }
