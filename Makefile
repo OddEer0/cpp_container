@@ -13,3 +13,6 @@ clean:
 tree:
 	$(CC) $(CPPFLAGS) main.cpp -o tree_main
 	./tree_main
+
+tree_leak:
+	valgrind --leak-check=full ./tree_main

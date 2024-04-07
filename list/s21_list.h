@@ -48,7 +48,11 @@ namespace s21 {
         
         public:
             Iterator(list *l, Node *current, int pos, bool isReverse = false) : list_(l), current_(current), position_(pos), isReverse_(isReverse) {};
-            ~Iterator() {};
+            ~Iterator() {
+                list_ = nullptr;
+                current_ = nullptr;
+                position_ = START;
+            };
             Iterator(const Iterator& other) = default;
             Iterator& operator=(const Iterator& other) = default;
 
@@ -117,8 +121,8 @@ namespace s21 {
             Iterator last();
         };
 
-        using iterator = Iterator&;
-        using const_iterator = const Iterator&;
+        using iterator = Iterator;
+        using const_iterator = const Iterator;
 
         private:
             Node* head_;
@@ -217,36 +221,28 @@ namespace s21 {
 
             // iterators
             iterator begin() {
-                Iterator* iterator = new Iterator(this, head_, PROCESS);
-                return *iterator;
+                return Iterator(this, head_, PROCESS);
             }
             const_iterator cbegin() const {
-                Iterator* iterator = new Iterator(this, head_, PROCESS);
-                return *iterator;
+                return Iterator(this, head_, PROCESS);
             }
             iterator end() {
-                Iterator* iterator = new Iterator(this, nullptr, END);
-                return *iterator;
+                return Iterator(this, nullptr, END);
             }
             const_iterator end() const {
-                Iterator* iterator = new Iterator(this, nullptr, END);
-                return *iterator;
+                return Iterator(this, nullptr, END);
             };
             iterator rbegin() {
-                Iterator* iterator = new Iterator(this, tail_, PROCESS, true);
-                return *iterator;
+                return Iterator(this, tail_, PROCESS, true);
             }
             const_iterator crbegin() const {
-                Iterator* iterator = new Iterator(this, tail_, PROCESS, true);
-                return *iterator;
+                return Iterator(this, tail_, PROCESS, true);
             }
             iterator rend() {
-                Iterator* iterator = new Iterator(this, nullptr, START, true);
-                return *iterator;
+                return Iterator(this, nullptr, START, true);
             }
             const_iterator crend() const {
-                Iterator* iterator = new Iterator(this, nullptr, START, true);
-                return *iterator;
+                return Iterator(this, nullptr, START, true);
             };
 
             // modifier - omit(resize)
@@ -256,23 +252,24 @@ namespace s21 {
                 while(curr != nullptr) {
                     if (prev != nullptr) {
                         allocator_.deallocate(prev->value_, 1);
+                        delete prev;
                     }
                     prev = curr;
                     curr = curr->next_;
                 }
                 if (prev != nullptr) {
                     allocator_.deallocate(prev->value_, 1);
+                    delete prev;
                 }
             }
 
-            iterator insert(const_iterator pos, const_reference value) {
-                Iterator* iterator;
+            iterator insert(const_iterator& pos, const_reference value) {
                 if (pos.position_ == START || pos.current_ == head_) {
                     push_front(value);
-                    iterator = new Iterator(this, head_, PROCESS);
+                    return Iterator(this, head_, PROCESS);
                 } else if (pos.position_ == END) {
                     push_back(value);
-                    iterator = new Iterator(this, tail_, PROCESS);
+                    return Iterator(this, tail_, PROCESS);
                 } else {
                     for (auto it = begin(); it != end(); ++it) {
                         if (it == pos) {
@@ -284,31 +281,29 @@ namespace s21 {
                             newNode->prev_->next_ = newNode;
                             newNode->next_->prev_ = newNode;
                             length_++;
-                            iterator = new Iterator(this, newNode, PROCESS);
-                            break;
+                            return Iterator(this, newNode, PROCESS);
                         }
                     }
                 }
-                return *iterator;
             }
 
-            iterator insert(const_iterator pos, int count, const_reference value) {
-                Iterator* iterator;
+            iterator insert(const_iterator& pos, int count, const_reference value) {
+                iterator iterator;
                 for (int i = 0; i < count; i++) {
                     iterator = &insert(pos, value);
                 }
-                return *iterator;
+                return iterator;
             }
 
             template< class InputIt >
-            iterator insert(const_iterator pos, InputIt first, InputIt last) {
+            iterator insert(const_iterator& pos, InputIt first, InputIt last) {
                 Iterator* iterator;
                 for (auto it = first; it != last; ++it) {
                     iterator = &insert(pos, *it);
                 }
                 return *iterator;
             }
-            iterator insert(const_iterator pos, std::initializer_list<T> ilist) {
+            iterator insert(const_iterator& pos, std::initializer_list<T> ilist) {
                 Iterator* iterator;
                 for (auto val : ilist) {
                     iterator = &insert(pos, val);
@@ -317,7 +312,7 @@ namespace s21 {
             }
 
             template <class R>
-            iterator insert_range(const_iterator pos, R&& rg) {
+            iterator insert_range(const_iterator& pos, R&& rg) {
                 Iterator* iterator;
                 for (auto it = rg.begin(); it != rg.end(); ++it) {
                     iterator = &insert(pos, *it);
@@ -325,7 +320,7 @@ namespace s21 {
                 return *iterator;
             }
 
-            iterator erase(iterator pos) {
+            iterator erase(iterator& pos) {
                 if (pos.position_ == START || pos.position_ == END) {
                     return pos;
                 }
@@ -350,18 +345,17 @@ namespace s21 {
 
                 return *res;
             }
-            iterator erase(const_iterator pos) {
+            iterator erase(const_iterator& pos) {
                 if (pos.position_ == START || pos.position_ == END) {
                     return pos;
                 }
 
-                Iterator *res;
                 if (pos.current_ == head_) {
                     pop_front();
-                    res = new Iterator(this, head_, PROCESS);
+                    return Iterator(this, head_, PROCESS);
                 } else if (pos.current_ == tail_) {
                     pop_back();
-                    res = new Iterator(this, nullptr, END);
+                    return Iterator(this, nullptr, END);
                 } else {
                     auto prevNode = pos.current_->prev_;
                     auto nextNode = pos.current_->next_;
@@ -370,19 +364,17 @@ namespace s21 {
                     allocator_.deallocate(pos.current_->value_, 1);
                     delete pos.current_;
                     length_--;
-                    res = new Iterator(this, nextNode, PROCESS);
+                    return Iterator(this, nextNode, PROCESS);
                 }
-
-                return *res;
             }
-            iterator erase(iterator first, iterator last) {
+            iterator erase(iterator& first, iterator& last) {
                 iterator res = first;
                 for (auto it = first; it != last;) {
                     it = erase(it);
                 }
                 return res;
             }
-            iterator erase(const_iterator first, const_iterator last) {
+            iterator erase(const_iterator& first, const_iterator& last) {
                 iterator res = first;
                 for (auto it = first; it != last;) {
                     it = erase(it);
