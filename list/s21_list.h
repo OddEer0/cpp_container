@@ -478,37 +478,60 @@ namespace s21 {
             }
 
             // operations
-            void merge(list& other );
-            void merge(list&& other );
-            template<class Compare>
-            void merge(list& other, Compare comp);
-            template< class Compare >
-            void merge(list&& other, Compare comp);
+            void merge(list& other) {
+                if (other.head_ == nullptr) {
+                    return;
+                }
+                if (head_ == nullptr) {
+                    head_ = other.head_;
+                    tail_ = other.tail_;
+                    length_ = other.length_;
+                    allocator_ = other.allocator_;
+                } else {
+                    tail_->next_ = other.head_;
+                    other.head_ = tail_;
+                    tail_ = other.tail_;
+                    length_ += other.length_;
+                }
 
-            void splice( const_iterator pos, list& other );
-            void splice( const_iterator pos, list&& other );
-            void splice( const_iterator pos, list& other, const_iterator it );
-            void splice( const_iterator pos, list&& other, const_iterator it );
-            void splice( const_iterator pos, list& other, const_iterator first, const_iterator last);
-            void splice( const_iterator pos, list&& other, const_iterator first, const_iterator last );
+                other.tail_ = nullptr;
+                other.head_ = nullptr;
+                other.length_ = 0;
+            }
 
-            size_type remove( const T& value );
-            template< class UnaryPredicate >
-            void remove_if( UnaryPredicate p );
-            template< class UnaryPredicate >
-            size_type remove_if( UnaryPredicate p );
+            void merge(list&& other) {
+                if (other.head_ == nullptr) {
+                    return;
+                }
+                if (head_ == nullptr) {
+                    head_ = other.head_;
+                    tail_ = other.tail_;
+                    length_ = other.length_;
+                    allocator_ = other.allocator_;
+                } else {
+                    tail_->next_ = other.head_;
+                    other.head_ = tail_;
+                    tail_ = other.tail_;
+                    length_ += other.length_;
+                }
 
-            void reverse();
+                other.tail_ = nullptr;
+                other.head_ = nullptr;
+                other.length_ = 0;
+            }
 
-            size_type unique();
-            template< class BinaryPredicate >
-            void unique( BinaryPredicate p );
-            template< class BinaryPredicate >
-            size_type unique( BinaryPredicate p );
-
-            void sort();
-            template< class Compare >
-            void sort( Compare comp );
+            void reverse() {
+                if (length_ == 0 || length_ == 2) {
+                    return;
+                }
+                iterator it = begin();
+                iterator rit = rbegin();
+                for (int i = 0; i < length_ / 2; i++) {
+                    it.current_.value_ = rit.current_.value_;
+                    ++it;
+                    ++rit;
+                }
+            }
 
             // capacity
             size_type size() {
@@ -520,9 +543,6 @@ namespace s21 {
             size_type max_size() {
                 return std::allocator_traits<Allocator>::max_size(allocator_);
             }
-
-            // non-member functions
-
     };
 }
 
