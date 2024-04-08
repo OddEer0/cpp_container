@@ -47,6 +47,7 @@ namespace s21 {
             bool isReverse_;
         
         public:
+            Iterator() : list_(nullptr), current_(nullptr), position_(START), isReverse_(false) {}
             Iterator(list *l, Node *current, int pos, bool isReverse = false) : list_(l), current_(current), position_(pos), isReverse_(isReverse) {};
             ~Iterator() {
                 list_ = nullptr;
@@ -270,82 +271,53 @@ namespace s21 {
                 } else if (pos.position_ == END) {
                     push_back(value);
                     return Iterator(this, tail_, PROCESS);
-                } else {
-                    for (auto it = begin(); it != end(); ++it) {
-                        if (it == pos) {
-                            value_type *newValue = allocator_.allocate(1);
-                            allocator_.construct(newValue, value);
-                            Node *newNode = new Node(newValue);
-                            newNode->prev_ = it.current_->prev_;
-                            newNode->next_ = it.current_;
-                            newNode->prev_->next_ = newNode;
-                            newNode->next_->prev_ = newNode;
-                            length_++;
-                            return Iterator(this, newNode, PROCESS);
-                        }
+                }
+                for (auto it = begin(); it != end(); ++it) {
+                    if (it == pos) {
+                        value_type *newValue = allocator_.allocate(1);
+                        allocator_.construct(newValue, value);
+                        Node *newNode = new Node(newValue);
+                        newNode->prev_ = it.current_->prev_;
+                        newNode->next_ = it.current_;
+                        newNode->prev_->next_ = newNode;
+                        newNode->next_->prev_ = newNode;
+                        length_++;
+                        return Iterator(this, newNode, PROCESS);
                     }
                 }
+                return Iterator();
             }
 
             iterator insert(const_iterator& pos, int count, const_reference value) {
-                iterator iterator;
                 for (int i = 0; i < count; i++) {
-                    iterator = &insert(pos, value);
+                    return insert(pos, value);
                 }
-                return iterator;
+                return Iterator();
             }
 
             template< class InputIt >
             iterator insert(const_iterator& pos, InputIt first, InputIt last) {
-                Iterator* iterator;
                 for (auto it = first; it != last; ++it) {
-                    iterator = &insert(pos, *it);
+                    return insert(pos, *it);
                 }
-                return *iterator;
+                return Iterator();
             }
             iterator insert(const_iterator& pos, std::initializer_list<T> ilist) {
-                Iterator* iterator;
                 for (auto val : ilist) {
-                    iterator = &insert(pos, val);
+                    return insert(pos, val);
                 }
-                return *iterator;
+                return Iterator();
             }
 
             template <class R>
             iterator insert_range(const_iterator& pos, R&& rg) {
-                Iterator* iterator;
                 for (auto it = rg.begin(); it != rg.end(); ++it) {
-                    iterator = &insert(pos, *it);
+                    return insert(pos, *it);
                 }
-                return *iterator;
+                return Iterator();
             }
 
             iterator erase(iterator& pos) {
-                if (pos.position_ == START || pos.position_ == END) {
-                    return pos;
-                }
-
-                Iterator *res;
-                if (pos.current_ == head_) {
-                    pop_front();
-                    res = new Iterator(this, head_, PROCESS);
-                } else if (pos.current_ == tail_) {
-                    pop_back();
-                    res = new Iterator(this, nullptr, END);
-                } else {
-                    auto prevNode = pos.current_->prev_;
-                    auto nextNode = pos.current_->next_;
-                    prevNode->next_ = nextNode;
-                    nextNode->prev_ = prevNode;
-                    allocator_.deallocate(pos.current_->value_, 1);
-                    delete pos.current_;
-                    length_--;
-                    res = new Iterator(this, nextNode, PROCESS);
-                }
-
-                return *res;
-            }
-            iterator erase(const_iterator& pos) {
                 if (pos.position_ == START || pos.position_ == END) {
                     return pos;
                 }
@@ -356,30 +328,48 @@ namespace s21 {
                 } else if (pos.current_ == tail_) {
                     pop_back();
                     return Iterator(this, nullptr, END);
-                } else {
-                    auto prevNode = pos.current_->prev_;
-                    auto nextNode = pos.current_->next_;
-                    prevNode->next_ = nextNode;
-                    nextNode->prev_ = prevNode;
-                    allocator_.deallocate(pos.current_->value_, 1);
-                    delete pos.current_;
-                    length_--;
-                    return Iterator(this, nextNode, PROCESS);
                 }
+                auto prevNode = pos.current_->prev_;
+                auto nextNode = pos.current_->next_;
+                prevNode->next_ = nextNode;
+                nextNode->prev_ = prevNode;
+                allocator_.deallocate(pos.current_->value_, 1);
+                delete pos.current_;
+                length_--;
+                return Iterator(this, nextNode, PROCESS);
+            }
+
+            iterator erase(const_iterator& pos) {
+                if (pos.position_ == START || pos.position_ == END) {
+                    return pos;
+                }
+                if (pos.current_ == head_) {
+                    pop_front();
+                    return Iterator(this, head_, PROCESS);
+                } else if (pos.current_ == tail_) {
+                    pop_back();
+                    return Iterator(this, nullptr, END);
+                }
+                auto prevNode = pos.current_->prev_;
+                auto nextNode = pos.current_->next_;
+                prevNode->next_ = nextNode;
+                nextNode->prev_ = prevNode;
+                allocator_.deallocate(pos.current_->value_, 1);
+                delete pos.current_;
+                length_--;
+                return Iterator(this, nextNode, PROCESS);
             }
             iterator erase(iterator& first, iterator& last) {
-                iterator res = first;
                 for (auto it = first; it != last;) {
-                    it = erase(it);
+                    return erase(it);
                 }
-                return res;
+                return Iterator();
             }
             iterator erase(const_iterator& first, const_iterator& last) {
-                iterator res = first;
                 for (auto it = first; it != last;) {
-                    it = erase(it);
+                    return erase(it);
                 }
-                return res;
+                return Iterator();
             }
 
             void push_back(const_reference value) {
