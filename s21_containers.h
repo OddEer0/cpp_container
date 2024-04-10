@@ -4,5 +4,6 @@
 #include "map/s21_map.h"
 #include "set/s21_set.h"
 #include "list/s21_list.h"
+#include "queue/s21_queue.h"
 
 #endif

@@ -7,30 +7,70 @@ namespace s21 {
     template <class T, class Container = s21::list<T>>
     class queue {
     public:
-        using reference = Container::reference;
-        using const_reference = Container::const_reference;
-        using size_type = Container::size_type;
-        using value_type = Container::value_type;
+        using reference = typename Container::reference;
+        using const_reference = typename Container::const_reference;
+        using size_type = typename Container::size_type;
+        using value_type = typename Container::value_type;
 
     private:
         Container container_;
 
     public:
-        stack();
-        ~stack();
+        queue() = default;
+        explicit queue(const Container& cont) : container_(cont) {}
+        explicit queue(Container&& cont) : container_(std::move(cont)) {}
+        queue(const queue& other) : container_(other.container_) {}
+        queue(queue&& other) noexcept : container_(std::move(other.container_)) {}
+        ~queue() {}
 
-        reference top();
-        const_reference top();
+        queue& operator=(const queue& other) {
+            if (this != &other) {
+                container_ = other.container_;
+            }
+            return *this;
+        }
 
-        bool empty();
-        size_type size();
+        queue& operator=(queue&& other) noexcept {
+            if (this != &other) {
+                container_ = std::move(other.container_);
+            }
+            return *this;
+        }
 
-        void push(const value_type& value);
-        void push(value_type&& value);
-        void pop();
+        std::string string() {
+            return container_.string();
+        }
+
+        reference top() {
+            return container_.front();
+        }
+
+        bool empty() {
+            return container_.empty();
+        }
+        size_type size() {
+            return container_.size();
+        }
+
+        void push(const value_type& value) {
+            container_.push_back(value);
+        }
+        void push(value_type&& value) {
+            container_.push_back(value);
+        }
+        void pop() {
+            container_.pop_front();
+        }
+
         template<class R>
-        void push_range(R&& rg);
-        void swap (stack & Other);
+        void push_range(R&& rg) {
+            for (auto it = rg.begin(); it != rg.end(); ++it) {
+                push(*it);
+            }
+        }
+        void swap(queue& Other) {
+            std::swap(container_, Other.container_);
+        }
     };
 }
 
