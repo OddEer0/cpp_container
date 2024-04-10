@@ -5,5 +5,6 @@
 #include "set/s21_set.h"
 #include "list/s21_list.h"
 #include "queue/s21_queue.h"
+#include "stack/s21_stack.h"
 
 #endif
