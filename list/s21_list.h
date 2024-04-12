@@ -6,6 +6,7 @@
 #define END 2
 
 #include <memory>
+#include <utility>
 
 namespace s21 {
     template <class T, class Allocator = std::allocator<T>>

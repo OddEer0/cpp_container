@@ -1,5 +1,5 @@
-template <class Key, class T, class Compare, class Allocator>
-bool RedBlackTree<Key, T, Compare, Allocator>::Iterator::operator==(const Iterator& other) {
+template <class Key, class Compare, class Allocator>
+bool RedBlackTree<Key, Compare, Allocator>::Iterator::operator==(const Iterator& other) {
     if (node_ == nullptr && other.node_ == nullptr) {
         if (position_ == other.position_) {
             return true;
@@ -12,8 +12,8 @@ bool RedBlackTree<Key, T, Compare, Allocator>::Iterator::operator==(const Iterat
     return node_->data_ == other.node_->data_;
 }
 
-template <class Key, class T, class Compare, class Allocator>
-bool RedBlackTree<Key, T, Compare, Allocator>::Iterator::operator!=(const Iterator& other) {
+template <class Key, class Compare, class Allocator>
+bool RedBlackTree<Key, Compare, Allocator>::Iterator::operator!=(const Iterator& other) {
     if (node_ == nullptr && other.node_ == nullptr) {
         if (position_ != other.position_) {
             return true;
@@ -26,47 +26,47 @@ bool RedBlackTree<Key, T, Compare, Allocator>::Iterator::operator!=(const Iterat
     return node_->data_ != other.node_->data_;
 }
 
-template <class Key, class T, class Compare, class Allocator>
-T& RedBlackTree<Key, T, Compare, Allocator>::Iterator::operator*() {
+template <class Key, class Compare, class Allocator>
+typename RedBlackTree<Key, Compare, Allocator>::key_type RedBlackTree<Key, Compare, Allocator>::Iterator::operator*() {
     return node_->data_;
 }
 
-template <class Key, class T, class Compare, class Allocator>
-typename RedBlackTree<Key, T, Compare, Allocator>::node_type RedBlackTree<Key, T, Compare, Allocator>::Iterator::getNode() {
+template <class Key, class Compare, class Allocator>
+typename RedBlackTree<Key, Compare, Allocator>::node_type RedBlackTree<Key, Compare, Allocator>::Iterator::getNode() {
     return node_;
 }
 
-template <class Key, class T, class Compare, class Allocator>
-T* RedBlackTree<Key, T, Compare, Allocator>::Iterator::operator->() {
+template <class Key, class Compare, class Allocator>
+typename RedBlackTree<Key, Compare, Allocator>::key_type* RedBlackTree<Key, Compare, Allocator>::Iterator::operator->() {
     return &(node_->data_);
 }
 
-template <class Key, class T, class Compare, class Allocator>
-typename RedBlackTree<Key, T, Compare, Allocator>::iterator RedBlackTree<Key, T, Compare, Allocator>::begin() {
+template <class Key, class Compare, class Allocator>
+typename RedBlackTree<Key, Compare, Allocator>::iterator RedBlackTree<Key, Compare, Allocator>::begin() {
     return Iterator(this, left(), PROCESS);
 }
 
-template <class Key, class T, class Compare, class Allocator>
-typename RedBlackTree<Key, T, Compare, Allocator>::iterator RedBlackTree<Key, T, Compare, Allocator>::end() {
+template <class Key, class Compare, class Allocator>
+typename RedBlackTree<Key, Compare, Allocator>::iterator RedBlackTree<Key, Compare, Allocator>::end() {
     iterator it(this, nullptr, START);
     it.end();
     return it;
 }
 
-template <class Key, class T, class Compare, class Allocator>
-typename RedBlackTree<Key, T, Compare, Allocator>::const_iterator RedBlackTree<Key, T, Compare, Allocator>::cbegin() {
+template <class Key, class Compare, class Allocator>
+typename RedBlackTree<Key, Compare, Allocator>::const_iterator RedBlackTree<Key, Compare, Allocator>::cbegin() {
     return Iterator(this, left(), PROCESS);
 }
 
-template <class Key, class T, class Compare, class Allocator>
-typename RedBlackTree<Key, T, Compare, Allocator>::const_iterator RedBlackTree<Key, T, Compare, Allocator>::cend() {
+template <class Key, class Compare, class Allocator>
+typename RedBlackTree<Key, Compare, Allocator>::const_iterator RedBlackTree<Key, Compare, Allocator>::cend() {
     iterator it(this, nullptr, START);
     it.end();
     return it;
 }
 
-template <class Key, class T, class Compare, class Allocator>
-typename RedBlackTree<Key, T, Compare, Allocator>::node_type RedBlackTree<Key, T, Compare, Allocator>::left() {
+template <class Key, class Compare, class Allocator>
+typename RedBlackTree<Key, Compare, Allocator>::node_type RedBlackTree<Key, Compare, Allocator>::left() {
     if (length_ == 0) {
         return nullptr;
     }
@@ -76,9 +76,8 @@ typename RedBlackTree<Key, T, Compare, Allocator>::node_type RedBlackTree<Key, T
     }
     return current;
 }
-redblacktree/iterator.tpp
-template <class Key, class T, class Compare, class Allocator>
-typename RedBlackTree<Key, T, Compare, Allocator>::node_type RedBlackTree<Key, T, Compare, Allocator>::right() {
+template <class Key, class Compare, class Allocator>
+typename RedBlackTree<Key, Compare, Allocator>::node_type RedBlackTree<Key, Compare, Allocator>::right() {
     if (length_ == 0) {
         return nullptr;
     }
@@ -89,8 +88,8 @@ typename RedBlackTree<Key, T, Compare, Allocator>::node_type RedBlackTree<Key, T
     return current;
 }
 
-template <class Key, class T, class Compare, class Allocator>
-typename RedBlackTree<Key, T, Compare, Allocator>::Iterator RedBlackTree<Key, T, Compare, Allocator>::Iterator::next() {
+template <class Key, class Compare, class Allocator>
+typename RedBlackTree<Key, Compare, Allocator>::Iterator RedBlackTree<Key, Compare, Allocator>::Iterator::next() {
     if (position_ == END) {
         return *this;
     }
@@ -121,8 +120,8 @@ typename RedBlackTree<Key, T, Compare, Allocator>::Iterator RedBlackTree<Key, T,
     return *this;
 }
 
-template <class Key, class T, class Compare, class Allocator>
-typename RedBlackTree<Key, T, Compare, Allocator>::Iterator RedBlackTree<Key, T, Compare, Allocator>::Iterator::prev() {
+template <class Key, class Compare, class Allocator>
+typename RedBlackTree<Key, Compare, Allocator>::Iterator RedBlackTree<Key, Compare, Allocator>::Iterator::prev() {
     if (position_ == START) {
         return *this;
     }
@@ -154,8 +153,8 @@ typename RedBlackTree<Key, T, Compare, Allocator>::Iterator RedBlackTree<Key, T,
     return *this;
 }
 
-template <class Key, class T, class Compare, class Allocator>
-typename RedBlackTree<Key, T, Compare, Allocator>::Iterator RedBlackTree<Key, T, Compare, Allocator>::Iterator::operator--() {
+template <class Key, class Compare, class Allocator>
+typename RedBlackTree<Key, Compare, Allocator>::Iterator RedBlackTree<Key, Compare, Allocator>::Iterator::operator--() {
     if (!is_reverse_) {
         return prev();
     } else {
@@ -163,8 +162,8 @@ typename RedBlackTree<Key, T, Compare, Allocator>::Iterator RedBlackTree<Key, T,
     }
 }
 
-template <class Key, class T, class Compare, class Allocator>
-typename RedBlackTree<Key, T, Compare, Allocator>::Iterator RedBlackTree<Key, T, Compare, Allocator>::Iterator::operator++() {
+template <class Key, class Compare, class Allocator>
+typename RedBlackTree<Key, Compare, Allocator>::Iterator RedBlackTree<Key, Compare, Allocator>::Iterator::operator++() {
     if (!is_reverse_) {
         return next();
     } else {
@@ -172,49 +171,49 @@ typename RedBlackTree<Key, T, Compare, Allocator>::Iterator RedBlackTree<Key, T,
     }
 }
 
-template <class Key, class T, class Compare, class Allocator>
-void RedBlackTree<Key, T, Compare, Allocator>::Iterator::start() {
+template <class Key, class Compare, class Allocator>
+void RedBlackTree<Key, Compare, Allocator>::Iterator::start() {
     node_ = nullptr;
     position_ = START;
 }
 
-template <class Key, class T, class Compare, class Allocator>
-void RedBlackTree<Key, T, Compare, Allocator>::Iterator::end() {
+template <class Key, class Compare, class Allocator>
+void RedBlackTree<Key, Compare, Allocator>::Iterator::end() {
     node_ = nullptr;
     position_ = END;
 }
 
-template <class Key, class T, class Compare, class Allocator>
-typename RedBlackTree<Key, T, Compare, Allocator>::Iterator RedBlackTree<Key, T, Compare, Allocator>::Iterator::first() {
+template <class Key, class Compare, class Allocator>
+typename RedBlackTree<Key, Compare, Allocator>::Iterator RedBlackTree<Key, Compare, Allocator>::Iterator::first() {
     start();
     return ++(*this);
 }
 
-template <class Key, class T, class Compare, class Allocator>
-typename RedBlackTree<Key, T, Compare, Allocator>::Iterator RedBlackTree<Key, T, Compare, Allocator>::Iterator::last() {
+template <class Key, class Compare, class Allocator>
+typename RedBlackTree<Key, Compare, Allocator>::Iterator RedBlackTree<Key, Compare, Allocator>::Iterator::last() {
     end();
     return --(*this);
 }
 
-template <class Key, class T, class Compare, class Allocator>
-typename RedBlackTree<Key, T, Compare, Allocator>::reverse_iterator RedBlackTree<Key, T, Compare, Allocator>::rbegin() {
+template <class Key, class Compare, class Allocator>
+typename RedBlackTree<Key, Compare, Allocator>::reverse_iterator RedBlackTree<Key, Compare, Allocator>::rbegin() {
     return Iterator(this, right(), PROCESS, true);
 }
 
-template <class Key, class T, class Compare, class Allocator>
-typename RedBlackTree<Key, T, Compare, Allocator>::reverse_iterator RedBlackTree<Key, T, Compare, Allocator>::rend() {
+template <class Key, class Compare, class Allocator>
+typename RedBlackTree<Key, Compare, Allocator>::reverse_iterator RedBlackTree<Key, Compare, Allocator>::rend() {
     iterator it(this, nullptr, START, true);
     it.start();
     return it;
 }
 
-template <class Key, class T, class Compare, class Allocator>
-typename RedBlackTree<Key, T, Compare, Allocator>::const_reverse_iterator RedBlackTree<Key, T, Compare, Allocator>::crbegin() {
+template <class Key, class Compare, class Allocator>
+typename RedBlackTree<Key, Compare, Allocator>::const_reverse_iterator RedBlackTree<Key, Compare, Allocator>::crbegin() {
     return Iterator(this, right(), PROCESS, true);
 }
 
-template <class Key, class T, class Compare, class Allocator>
-typename RedBlackTree<Key, T, Compare, Allocator>::const_reverse_iterator RedBlackTree<Key, T, Compare, Allocator>::crend() {
+template <class Key, class Compare, class Allocator>
+typename RedBlackTree<Key, Compare, Allocator>::const_reverse_iterator RedBlackTree<Key, Compare, Allocator>::crend() {
     iterator it(this, nullptr, START, true);
     it.start();
     return it;
