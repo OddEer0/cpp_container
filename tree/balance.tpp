@@ -1,5 +1,5 @@
-template <class Key, class T, class Compare, class Allocator>
-void RedBlackTree<Key, T, Compare, Allocator>::balanceInsert(node_type newNode) {
+template <class Key, class Compare, class Allocator>
+void RedBlackTree<Key, Compare, Allocator>::balanceInsert(node_type newNode) {
     node_type uncle = nullptr;
     while (getColor(newNode->parent_) == RED) {
         if (newNode->parent_->isLeftNode()) {
@@ -40,8 +40,8 @@ void RedBlackTree<Key, T, Compare, Allocator>::balanceInsert(node_type newNode) 
     root_->color_ = BLACK;
 }
 
-template <class Key, class T, class Compare, class Allocator>
-void RedBlackTree<Key, T, Compare, Allocator>::swapNode(node_type to, node_type from, bool isNull) {
+template <class Key, class Compare, class Allocator>
+void RedBlackTree<Key, Compare, Allocator>::swapNode(node_type to, node_type from, bool isNull) {
     if (to == root_) {
         root_ = from;
     } else if (to->isLeftNode()) {
@@ -60,8 +60,8 @@ void RedBlackTree<Key, T, Compare, Allocator>::swapNode(node_type to, node_type 
     from->parent_ = to->parent_;
 }
 
-template <class Key, class T, class Compare, class Allocator>
-void RedBlackTree<Key, T, Compare, Allocator>::rightRotate(node_type node) {
+template <class Key, class Compare, class Allocator>
+void RedBlackTree<Key, Compare, Allocator>::rightRotate(node_type node) {
     node_type tmp = node->left_;
     node->left_ = tmp->right_;
     if (node->left_ != nullptr) {
@@ -79,8 +79,8 @@ void RedBlackTree<Key, T, Compare, Allocator>::rightRotate(node_type node) {
     node->parent_ = tmp;
 }
 
-template <class Key, class T, class Compare, class Allocator>
-void RedBlackTree<Key, T, Compare, Allocator>::leftRotate(node_type node) {
+template <class Key, class Compare, class Allocator>
+void RedBlackTree<Key, Compare, Allocator>::leftRotate(node_type node) {
     node_type tmp = node->right_;
     node->right_ = tmp->left_;
     if (node->right_ != nullptr) {
@@ -98,8 +98,8 @@ void RedBlackTree<Key, T, Compare, Allocator>::leftRotate(node_type node) {
     node->parent_ = tmp;
 }
 
-template <class Key, class T, class Compare, class Allocator>
-void RedBlackTree<Key, T, Compare, Allocator>::balanceRemove(node_type node, bool isLeftNode) {
+template <class Key, class Compare, class Allocator>
+void RedBlackTree<Key, Compare, Allocator>::balanceRemove(node_type node, bool isLeftNode) {
     while (node != root_ && node->isBlack()) {
         node_type brother = nullptr;
         if (isLeftNode) {
@@ -156,8 +156,8 @@ void RedBlackTree<Key, T, Compare, Allocator>::balanceRemove(node_type node, boo
     node->color_ = BLACK;
 }
 
-template <class Key, class T, class Compare, class Allocator>
-typename RedBlackTree<Key, T, Compare, Allocator>::node_type RedBlackTree<Key, T, Compare, Allocator>::getRightSwappedNode(node_type node) {
+template <class Key, class Compare, class Allocator>
+typename RedBlackTree<Key, Compare, Allocator>::node_type RedBlackTree<Key, Compare, Allocator>::getRightSwappedNode(node_type node) {
     node_type current = node;
     while (current != nullptr) {
         int childrenCount = current->getChildrenCount();
@@ -165,20 +165,20 @@ typename RedBlackTree<Key, T, Compare, Allocator>::node_type RedBlackTree<Key, T
             return current;
         }
         if (childrenCount == 2) {
-            if (cmp_(current->left_->data_->first, current->data_->first)) {
+            if (cmp_(*current->left_->data_, *current->data_)) {
                 current = current->left_;
             } else {
                 current = current->right_;
             }
         } else {
             if (current->right_ == nullptr) {
-                if (cmp_(current->left_->data_->first, current->data_->first)) {
+                if (cmp_(*current->left_->data_, *current->data_)) {
                     current = current->left_;
                 } else {
                     return current;
                 }
             } else {
-                if (cmp_(current->right_->data_->first, current->data_->first)) {
+                if (cmp_(*current->right_->data_, *current->data_)) {
                     current = current->right_;
                 } else {
                     return current;
@@ -190,8 +190,8 @@ typename RedBlackTree<Key, T, Compare, Allocator>::node_type RedBlackTree<Key, T
     return node;
 }
 
-template <class Key, class T, class Compare, class Allocator>
-bool RedBlackTree<Key, T, Compare, Allocator>::getColor(node_type node) {
+template <class Key, class Compare, class Allocator>
+bool RedBlackTree<Key, Compare, Allocator>::getColor(node_type node) {
     if (node == nullptr) {
         return BLACK;
     }

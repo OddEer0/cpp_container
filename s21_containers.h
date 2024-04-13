@@ -6,6 +6,6 @@
 #include "list/s21_list.h"
 #include "queue/s21_queue.h"
 #include "stack/s21_stack.h"
-#include "map_new/tree.h"
+#include "map/s21_map.h"
 
 #endif

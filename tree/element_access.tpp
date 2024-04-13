@@ -1,12 +1,12 @@
 template <class Key, class Compare, class Allocator>
-typename RedBlackTree<Key, Compare, Allocator>::node_type RedBlackTree<Key, Compare, Allocator>::getNode(key_type &key) {
+typename RedBlackTree<Key, Compare, Allocator>::node_type RedBlackTree<Key, Compare, Allocator>::getNode(key_type key) {
     node_type current = root_;
 
     while(current != nullptr) {
-        if (key == current->data_) {
+        if (key == *current->data_) {
             return current;
         }
-        if (cmp_(key, current->data_)) {
+        if (cmp_(key, *current->data_)) {
             current = current->left_;
         } else {
             current = current->right_;

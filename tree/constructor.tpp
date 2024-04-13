@@ -3,6 +3,10 @@ RedBlackTree<Key, Compare, Allocator>::RedBlackTree()
     : root_(nullptr), length_(0), cmp_(Compare()), allocator_(Allocator()) {}
 
 template <class Key, class Compare, class Allocator>
+RedBlackTree<Key, Compare, Allocator>::RedBlackTree(Allocator allocator)
+    : root_(nullptr), length_(0), cmp_(Compare()), allocator_(allocator) {}
+
+template <class Key, class Compare, class Allocator>
 RedBlackTree<Key, Compare, Allocator>::RedBlackTree(std::initializer_list<key_type> const &items) 
     : root_(nullptr), length_(0), cmp_(Compare()), allocator_(Allocator()) {
     for (key_type item : items) {

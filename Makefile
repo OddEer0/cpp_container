@@ -10,7 +10,7 @@ test:
 clean:
 	rm -rf *.a *.o testing tree_main test
 
-tree:
+main:
 	$(CC) $(CPPFLAGS) main.cpp -o tree_main
 	./tree_main
 

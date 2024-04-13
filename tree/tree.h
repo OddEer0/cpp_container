@@ -12,7 +12,7 @@
 #define PROCESS 1
 #define END 2
 
-namespace s21_test {
+namespace s21 {
     template <class Key, class Compare = std::less<Key>, class Allocator = std::allocator<Key>>
     class RedBlackTree {
     public:
@@ -40,7 +40,7 @@ namespace s21_test {
 
         public:
             Node() : color_(BLACK) {};
-            Node(Key val) : data_(val), color_(RED), parent_(nullptr), left_(nullptr), right_(nullptr) {};
+            Node(Key* val) : data_(val), color_(RED), parent_(nullptr), left_(nullptr), right_(nullptr) {};
             key_type getKey();
             node_type getLeft();
             node_type getRight();
@@ -111,6 +111,7 @@ namespace s21_test {
     public:
         // CONSTRUCTORS
         RedBlackTree();
+        RedBlackTree(Allocator allocator);
         RedBlackTree(std::initializer_list<key_type> const &items);
         // На самом деле если скопировать по итератору. Она идентичной не будет по структуре. Для этого нужно делать специальный метод для копирования
         RedBlackTree(RedBlackTree &other);
@@ -126,6 +127,8 @@ namespace s21_test {
         // PRINT
         std::string string();
         void output(node_type node, std::string prefix, bool isTail, std::string* str);
+        std::string stringWithCompare(std::function<std::string(key_type)> callback, bool withColor = false);
+        void outputWithCompare(node_type node, std::string prefix, bool isTail, std::string* str, std::function<std::string(key_type)> callback, bool withColor = false);
 
         // CAPACITY
         bool empty();
@@ -133,7 +136,7 @@ namespace s21_test {
         size_type max_size();
 
         // ELEMENT ACCESS
-        node_type getNode(key_type &key);
+        node_type getNode(key_type key);
         reference at(const_reference key);
         reference operator[](const_reference key);
 
@@ -150,78 +153,25 @@ namespace s21_test {
         const_reverse_iterator crend();
 
         // MODIFIER
-        void clear() {
-            clearRecursive(root_);
-            root_ = nullptr;
-            length_ = 0;
-        }
-        std::pair<iterator, bool> insert( const key_type& value );
-        template< class P >
-        std::pair<iterator, bool> insert( P&& value );
-        std::pair<iterator, bool> insert( key_type&& value );
-        iterator insert( iterator pos, const key_type& value );
-        template< class P >
-        iterator insert( const_iterator pos, P&& value );
-        iterator insert( const_iterator pos, key_type&& value );
-        template< class InputIt >
-        void insert( InputIt first, InputIt last );
-        void insert( std::initializer_list<key_type> ilist );
-        // insert_return_type insert( node_type&& nh );
-        iterator insert( const_iterator pos, node_type&& nh );
-        template<class R>
-        void insert_range( R&& rg );
-        template< class M >
-        std::pair<iterator, bool> insert_or_assign( const Key& k, M&& obj );
-        template< class M >
-        std::pair<iterator, bool> insert_or_assign( Key&& k, M&& obj );
-        template< class K, class M >
-        std::pair<iterator, bool> insert_or_assign( K&& k, M&& obj );
-        template< class M >
-        iterator insert_or_assign( const_iterator hint, const Key& k, M&& obj );
-        template< class M >
-        iterator insert_or_assign( const_iterator hint, Key&& k, M&& obj );
-        template< class K, class M >
-        iterator insert_or_assign( const_iterator hint, K&& k, M&& obj );
-        iterator erase( iterator pos );
-        iterator erase( iterator first, iterator last );
-        size_type erase( const Key& key );
-        template< class K >
-        size_type erase( K&& x );
-        void swap( class other );
-        node_type extract( const_iterator position );
-        node_type extract( const Key& k );
-        template< class K >
-        node_type extract( K&& x );
-        template< class C2 >
+        void clear();
+        std::pair<iterator, bool> insert(key_type value);
+        template<class InputIt>
+        void insert(InputIt first, InputIt last);
+        void insert(std::initializer_list<key_type> ilist);
+        size_type erase(iterator pos);
+        size_type erase(key_type key);
+        void swap(RedBlackTree& other);
+        std::optional<key_type> extract(iterator position);
+        std::optional<key_type> extract(key_type key);
 
         // LOOKUP
-        iterator find( const Key& key );
-        const_iterator find( const Key& key ) const;
-        template< class K >
-        iterator find( const K& x );
-        template< class K >
-        const_iterator find( const K& x ) const;
-        bool contains( const Key& key ) const;
-        template< class K >
-        bool contains( const K& x ) const;
-        std::pair<iterator, iterator> equal_range( const Key& key );
-        std::pair<const_iterator, const_iterator> equal_range( const Key& key ) const;
-        template< class K >
-        std::pair<iterator, iterator> equal_range( const K& x );
-        template< class K >
-        std::pair<const_iterator, const_iterator> equal_range( const K& x ) const;
-        iterator lower_bound( const Key& key );
-        const_iterator lower_bound( const Key& key ) const;
-        template< class K >
-        iterator lower_bound( const K& x );
-        template< class K >
-        const_iterator lower_bound( const K& x ) const;
-        iterator upper_bound( const Key& key );
-        const_iterator upper_bound( const Key& key ) const;
-        template< class K >
-        iterator upper_bound( const K& x );
-        template< class K >
-        const_iterator upper_bound( const K& x ) const;
+        bool contains( const Key& key ) const {
+            node_type node = getNode(key);
+            if (node == nullptr) {
+                return false;
+            }
+            return true;
+        }
 
         // OBSERVERS
         key_compare key_comp();
@@ -237,6 +187,7 @@ namespace s21_test {
     #include "print.tpp"
     #include "element_access.tpp"
     #include "capacity.tpp"
+    #include "modifier.tpp"
 }
 
 #endif

@@ -28,7 +28,7 @@ bool RedBlackTree<Key, Compare, Allocator>::Iterator::operator!=(const Iterator&
 
 template <class Key, class Compare, class Allocator>
 typename RedBlackTree<Key, Compare, Allocator>::key_type RedBlackTree<Key, Compare, Allocator>::Iterator::operator*() {
-    return node_->data_;
+    return *node_->data_;
 }
 
 template <class Key, class Compare, class Allocator>
