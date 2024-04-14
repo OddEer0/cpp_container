@@ -5,17 +5,10 @@
 #include <cstddef>
 #include <functional>
 #include <optional>
-#include "../tree/tree.h"
-
-template <class A, class K>
-struct CustomComparator {
-    bool operator() (std::pair<A, K> a, std::pair<A, K> b) const {
-        return a.first < b.first;
-    }
-};
+#include "../tree_kv/tree.h"
 
 namespace s21 {
-    template <class Key, class T, class Compare = CustomComparator<Key, T>, class Allocator = std::allocator<std::pair<const Key, T>>>
+    template <class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator<std::pair<const Key, T>>>
     class map {
     // USING TYPESREDBLACKTREE
     public:
@@ -30,30 +23,28 @@ namespace s21 {
         using const_reference = const value_type&;
         using pointer = typename std::allocator_traits<Allocator>::pointer;
         using const_pointer = typename std::allocator_traits<Allocator>::const_pointer;
-        using iterator = typename RedBlackTree<Key, Compare, Allocator>::iterator;
-        using const_iterator = typename RedBlackTree<Key, Compare, Allocator>::const_iterator;
+        using piterator = typename RedBlackTree<Key, T, Compare, Allocator>::piterator;
+        using iterator = typename RedBlackTree<Key, T, Compare, Allocator>::iterator;
+        using const_iterator = typename RedBlackTree<Key, T, Compare, Allocator>::const_iterator;
         using reverse_iterator = iterator;
         using const_reverse_iterator = const_iterator;
-        using node_type = typename RedBlackTree<Key, std::function<bool(value_type, value_type)>, Allocator>::node_type;
+        using node_type = typename RedBlackTree<Key, T, Compare, Allocator>::node_type;
 
     private:
-        RedBlackTree<value_type, Compare, Allocator> tree_;
+        RedBlackTree<Key, T, Compare, Allocator> tree_;
 
     public:
         map() {
-            tree_ = RedBlackTree<value_type, Compare, Allocator>();
+            tree_ = RedBlackTree<Key, T, Compare, Allocator>();
         }
         map(std::initializer_list<value_type> const &items) {
-            tree_ = RedBlackTree<value_type, Compare, Allocator>();
-            for (auto item : items) {
-                tree_.insert(item);
-            }
+            tree_ = RedBlackTree<Key, T, Compare, Allocator>(items);
         }
         map(map& other) {
-            tree_ = RedBlackTree<value_type, Compare, Allocator>(other.tree_);
+            tree_ = RedBlackTree<Key, T, Compare, Allocator>(other.tree_);
         }
         map(map&& other) {
-            tree_ = RedBlackTree<value_type, Compare, Allocator>(std::move(other.tree_));
+            tree_ = RedBlackTree<Key, T, Compare, Allocator>(std::move(other.tree_));
         }
         map& operator=(map &&other) {
             tree_ = std::move(other.tree_);
@@ -67,9 +58,7 @@ namespace s21 {
 
         // PRINT MAP
         std::string string() {
-            return tree_.stringWithCompare(std::function<std::string(value_type)>([](value_type val) {
-                return "Key: " + std::to_string(val.first) + ", Value: " + std::to_string(val.second);
-            }));
+            return tree_.string();
         }
 
         // CAPACITY

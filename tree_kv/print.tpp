@@ -1,16 +1,16 @@
-template <class Key, class Compare, class Allocator>
-std::string RedBlackTree<Key, Compare, Allocator>::string() {
+template <class Key, class T, class Compare, class Allocator>
+std::string RedBlackTree<Key, T, Compare, Allocator>::string() {
     std::string str = "";
     if (!empty()) {
         output(root_, "", true, &str);
     } else {
-        str += "Empty tree!\n";
+        str += "empty\n";
     }
     return str;
 }
 
-template <class Key, class Compare, class Allocator>
-void RedBlackTree<Key, Compare, Allocator>::output(node_type node, std::string prefix, bool isTail, std::string* str) {
+template <class Key, class T, class Compare, class Allocator>
+void RedBlackTree<Key, T, Compare, Allocator>::output(node_type node, std::string prefix, bool isTail, std::string* str) {
     if (node->right_ != nullptr) {
         std::string newPrefix = prefix;
         if (isTail) {
@@ -27,7 +27,7 @@ void RedBlackTree<Key, Compare, Allocator>::output(node_type node, std::string p
         *str += "┌── ";
     }
     if (node->data_ != nullptr) {
-        *str += "Color: " + std::string(node->color_ == BLACK ? "BLACK" : "RED") + ", Key: " + std::to_string(*node->data_) + "\n";
+        *str += "Color: " + std::string(node->color_ == BLACK ? "BLACK" : "RED") + ", Key: " + std::to_string(node->data_->first) + ", Value: " + std::to_string(node->data_->second) + "\n";
     } else {
         *str += "NULL\n";
     }
@@ -42,8 +42,8 @@ void RedBlackTree<Key, Compare, Allocator>::output(node_type node, std::string p
     }
 }
 
-template <class Key, class Compare, class Allocator>
-std::string RedBlackTree<Key, Compare, Allocator>::stringWithCallback(std::function<std::string(key_type)> callback, bool withColor) {
+template <class Key, class T, class Compare, class Allocator>
+std::string RedBlackTree<Key, T, Compare, Allocator>::stringWithCallback(std::function<std::string(key_type)> callback, bool withColor) {
     std::string str = "";
     if (!empty()) {
         outputWithCompare(root_, "", true, &str, callback, withColor);
@@ -53,8 +53,8 @@ std::string RedBlackTree<Key, Compare, Allocator>::stringWithCallback(std::funct
     return str;
 }
 
-template <class Key, class Compare, class Allocator>
-void RedBlackTree<Key, Compare, Allocator>::outputWithCallback(node_type node, std::string prefix, bool isTail, std::string* str, std::function<std::string(key_type)> callback, bool withColor) {
+template <class Key, class T, class Compare, class Allocator>
+void RedBlackTree<Key, T, Compare, Allocator>::outputWithCallback(node_type node, std::string prefix, bool isTail, std::string* str, std::function<std::string(key_type)> callback, bool withColor) {
     if (node->right_ != nullptr) {
         std::string newPrefix = prefix;
         if (isTail) {
