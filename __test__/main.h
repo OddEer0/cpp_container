@@ -6,5 +6,7 @@
 #include "../s21_containers.h"
 
 s21::map<int, int> initMap();
+s21::set<int> initSet();
+s21::list<int> initList();
 
 #endif

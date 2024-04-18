@@ -143,11 +143,9 @@ namespace s21 {
             tree_.clear();
         }
 
-        // Обмен содержимым двух деревьев
-        // void swap(RedBlackTree& other);
-
-        // Слияние двух деревьев
-        // void merge(RedBlackTree& other);
+        void swap(map& other) {
+            tree_.swap(other.tree_);
+        }
 
         // LOOKUP
         // Поиск элемента с заданным ключом
@@ -161,17 +159,6 @@ namespace s21 {
             return tree_.contains(key);
         }
 
-        // // Возвращает диапазон элементов с заданным ключом
-        // std::pair<iterator, iterator> equal_range(const key_type& key);
-        // std::pair<const_iterator, const_iterator> equal_range(const key_type& key) const;
-
-        // // Возвращает итератор на первый элемент не меньше заданного ключа
-        // iterator lower_bound(const key_type& key);
-        // const_iterator lower_bound(const key_type& key) const;
-
-        // // Возвращает итератор на первый элемент больше заданного ключа
-        // iterator upper_bound(const key_type& key);
-        // const_iterator upper_bound(const key_type& key) const;
 
         // OBSERVERS (getters and setters)
         key_compare key_comp() {

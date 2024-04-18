@@ -1,18 +1,20 @@
-#ifndef S21_CONTAINERS_SET_H_
-#define S21_CONTAINERS_SET_H_
+#ifndef S21_CONTAINERS_MULTISET_H_
+#define S21_CONTAINERS_MULTISET_H_
 
 #include <utility>
 #include <cstddef>
 #include <functional>
 #include <optional>
 #include "../tree_kv/tree.h"
+#include "../list/s21_list.h"
 
 namespace s21 {
-    template <class Key, class Compare = std::less<Key>, class Allocator = std::allocator<std::pair<const Key, bool>>>
-    class set {
+    template <class Key, class Compare = std::less<Key>, class Allocator = std::allocator<std::pair<Key, list<Key>>>>
+    class multiset {
     public:
         using key_type = Key;
         using value_type = Key;
+        using wrap_value = list<Key>;
         using size_type = size_t;
         using difference_type = ptrdiff_t;
         using key_compare = Compare;
@@ -25,7 +27,7 @@ namespace s21 {
 
         class Iterator {
         private:
-            typename RedBlackTree<Key, bool, Compare, Allocator>::iterator iter_;
+            typename RedBlackTree<Key, list<Key>, Compare, Allocator>::iterator iter_;
 
         public:
             Iterator(typename RedBlackTree<Key, bool, Compare, Allocator>::iterator it) : iter_(it) {};
@@ -57,16 +59,13 @@ namespace s21 {
             Iterator operator--() {
                 iter_ = --iter_;
             }
-            node_type getNode() {
-                return iter_.getNode();
-            }
             key_type operator*() {
-                auto node = iter_.getNode();
-                return node->getKey();
+                node_type node = iter_.getNode();
+                return node->data_->first;
             }
             key_type* operator->() {
-                auto node = iter_.getNode();
-                return &(node->getKey());
+                node_type node = iter_.getNode();
+                return &(node->data_->first);
             }
 
             void start() {
@@ -95,26 +94,27 @@ namespace s21 {
         RedBlackTree<Key, bool, Compare, Allocator> tree_;
 
     public:
-        set() {
+        multiset() {
             tree_ = RedBlackTree<Key, bool, Compare, Allocator>();
         }
-        set(std::initializer_list<value_type> const &items) {
+        multiset(std::initializer_list<value_type> const &items) {
+            tree_ = RedBlackTree<Key, bool, Compare, Allocator>();
             for (value_type item : items) {
-                tree_.insert(std::make_pair(item, false));
+                insert(item);
             }
         }
-        set(set& other) {
+        multiset(multiset& other) {
             tree_ = RedBlackTree<Key, bool, Compare, Allocator>(other.tree_);
         }
-        set(set&& other) {
+        multiset(multiset&& other) {
             tree_ = RedBlackTree<Key, bool, Compare, Allocator>(std::move(other.tree_));
         }
-        set& operator=(set &&other) {
+        multiset& operator=(multiset &&other) {
             tree_ = std::move(other.tree_);
             return *this;
         }
         // Оператор присваивания перемещения
-        set& operator=(set &other) {
+        multiset& operator=(multiset &other) {
             tree_ = other.tree_;
             return *this;
         }
@@ -174,17 +174,11 @@ namespace s21 {
 
         // Удвление по ключу. Возвращает пару ключ значение при успешном удалений. Если же элемента не существует возвращает std::nullopt
         std::optional<value_type> extract(value_type value) {
-            auto res = tree_.extract(value);
-            if (!res.has_value()) {
-                return std::nullopt;
-            }
-            return std::optional(res.value().first);
+            return tree_.extract(value);
         }
 
         // Обмен содержимым двух деревьев
-        void swap(set& other) {
-            tree_.swap(other.tree_);
-        }
+        // void swap(RedBlackTree& other);
 
         // Слияние двух деревьев
         // void merge(RedBlackTree& other);
@@ -222,19 +216,19 @@ namespace s21 {
 
 
         // ELEMENT ACCESS
-        value_type at(value_type value) {
+        value_type &at(value_type value) {
             node_type node = tree_.getNode(value);
             if (node == nullptr) {
                 throw std::out_of_range("value not found in value");
             }
-            return node->getKey();
+            return node->data_->first;
         }
         value_type operator[](value_type value) {
-            node_type node = tree_.getNode(value);
+            node_type node = getNode(value);
             if (node == nullptr) {
                 return value_type();
             }
-            return node->getKey();
+            return node->data_->second;
         }
 
 

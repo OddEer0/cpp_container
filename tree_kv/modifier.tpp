@@ -124,6 +124,10 @@ std::optional<typename RedBlackTree<Key, T, Compare, Allocator>::value_type> Red
             }
         }
     }
+    if (isNotChild) {
+        delete child;
+        child = nullptr;
+    }
     length_--;
     return std::make_pair(keyRes, valueRes);
 }

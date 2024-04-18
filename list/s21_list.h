@@ -198,6 +198,7 @@ namespace s21 {
                 return *this;
             }
             list& operator=(std::initializer_list<T> ilist) {
+                clear();
                 for (auto val : ilist) {
                     push_back(val);
                 }
@@ -263,6 +264,9 @@ namespace s21 {
                     allocator_.deallocate(prev->value_, 1);
                     delete prev;
                 }
+                head_ = nullptr;
+                tail_ = nullptr;
+                length_ = 0;
             }
 
             iterator insert(const_iterator& pos, const_reference value) {
@@ -290,32 +294,36 @@ namespace s21 {
             }
 
             iterator insert(const_iterator& pos, int count, const_reference value) {
+                iterator iter = Iterator();
                 for (int i = 0; i < count; i++) {
-                    return insert(pos, value);
+                    iter = insert(pos, value);
                 }
-                return Iterator();
+                return iter;
             }
 
             template< class InputIt >
             iterator insert(const_iterator& pos, InputIt first, InputIt last) {
+                iterator iter = Iterator();
                 for (auto it = first; it != last; ++it) {
-                    return insert(pos, *it);
+                    iter = insert(pos, *it);
                 }
-                return Iterator();
+                return iter;
             }
             iterator insert(const_iterator& pos, std::initializer_list<T> ilist) {
+                iterator iter = Iterator();
                 for (auto val : ilist) {
-                    return insert(pos, val);
+                    iter = insert(pos, val);
                 }
-                return Iterator();
+                return iter;
             }
 
             template <class R>
             iterator insert_range(const_iterator& pos, R&& rg) {
+                iterator iter = Iterator();
                 for (auto it = rg.begin(); it != rg.end(); ++it) {
-                    return insert(pos, *it);
+                    iter = insert(pos, *it);
                 }
-                return Iterator();
+                return iter;
             }
 
             iterator erase(iterator& pos) {
@@ -361,16 +369,18 @@ namespace s21 {
                 return Iterator(this, nextNode, PROCESS);
             }
             iterator erase(iterator& first, iterator& last) {
-                for (auto it = first; it != last;) {
-                    return erase(it);
+                iterator iter = first;
+                for (;iter != last;) {
+                    iter = erase(iter);
                 }
-                return Iterator();
+                return iter;
             }
             iterator erase(const_iterator& first, const_iterator& last) {
-                for (auto it = first; it != last;) {
-                    return erase(it);
+                iterator iter = first;
+                for (;iter != last;) {
+                    iter = erase(iter);
                 }
-                return Iterator();
+                return iter;
             }
 
             void push_back(const_reference value) {
@@ -512,13 +522,15 @@ namespace s21 {
             }
 
             void reverse() {
-                if (length_ == 0 || length_ == 2) {
+                if (length_ == 0 || length_ == 1) {
                     return;
                 }
                 iterator it = begin();
                 iterator rit = rbegin();
-                for (int i = 0; i < length_ / 2; i++) {
-                    it.current_.value_ = rit.current_.value_;
+                for (size_type i = 0; i < length_ / 2; i++) {
+                    auto tmp = it.current_->value_;
+                    it.current_->value_ = rit.current_->value_;
+                    rit.current_->value_ = tmp;
                     ++it;
                     ++rit;
                 }

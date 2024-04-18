@@ -32,7 +32,8 @@ namespace s21 {
     // INNER CLASSES
     public:
         class Node {
-        public:
+        friend RedBlackTree;
+        private:
             using node_type = Node*;
             std::pair<const key_type, mapped_value>* data_;
             bool color_;
@@ -40,6 +41,7 @@ namespace s21 {
             node_type left_;
             node_type right_;
 
+        public:
             Node() : color_(BLACK) {};
             Node(std::pair<const key_type, mapped_value>* data) : data_(data), color_(RED), parent_(nullptr), left_(nullptr), right_(nullptr) {};
             key_type getKey();
@@ -59,6 +61,7 @@ namespace s21 {
         using node_type = Node*;
 
         class Iterator {
+        friend RedBlackTree;
         private:
             RedBlackTree<Key, T, Compare, Allocator> *tree_;
             node_type node_;
@@ -169,28 +172,18 @@ namespace s21 {
         void clear();
 
         // Обмен содержимым двух деревьев
-        // void swap(RedBlackTree& other);
-
-        // Слияние двух деревьев
-        // void merge(RedBlackTree& other);
+        void swap(RedBlackTree& other) {
+            std::swap(root_, other.root_);
+            std::swap(cmp_, other.cmp_);
+            std::swap(length_, other.length_);
+            std::swap(allocator_, other.allocator_);
+        }
 
         // LOOKUP
         // Поиск элемента с заданным ключом
         iterator find(key_type key);
         const_iterator find(key_type key) const;
         bool contains(key_type key);
-
-        // Возвращает диапазон элементов с заданным ключом
-        // std::pair<iterator, iterator> equal_range(const key_type& key);
-        // std::pair<const_iterator, const_iterator> equal_range(const key_type& key) const;
-
-        // Возвращает итератор на первый элемент не меньше заданного ключа
-        // iterator lower_bound(const key_type& key);
-        // const_iterator lower_bound(const key_type& key) const;
-
-        // Возвращает итератор на первый элемент больше заданного ключа
-        // iterator upper_bound(const key_type& key);
-        // const_iterator upper_bound(const key_type& key) const;
 
         // OBSERVERS (getters and setters)
         key_compare key_comp();

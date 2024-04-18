@@ -7,6 +7,9 @@ test:
 	$(CC) $(CPPFLAGS) $(FLAG_GTEST) __test__/**/*.cpp __test__/*.cpp -o testing $(LINK_GTEST)
 	./testing
 
+leak:
+	valgrind --leak-check=full ./testing
+
 clean:
 	rm -rf *.a *.o testing tree_main test
 
