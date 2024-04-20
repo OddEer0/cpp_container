@@ -79,10 +79,10 @@ namespace s21 {
                     position_ = PROCESS;
                     return *this;
                 }
-                index_--;
                 if (index_ == 0) {
-                    index_++;
                     position_ = START;
+                } else {
+                    index_--;
                 }
                 return *this;
             }
@@ -179,6 +179,7 @@ namespace s21 {
                         push_back(other.data_[i]);
                     }
                 }
+                return *this;
             }
             vector& operator=(vector&& other) {
                 clear();
@@ -189,12 +190,15 @@ namespace s21 {
                     }
                 }
                 other.clear();
+                return *this;
             }
             vector& operator=(std::initializer_list<T> ilist) {
                 clear();
+                for (auto item : ilist) {
+                    push_back(item);
+                }
+                return *this;
             };
-
-            void assign(size_type count, const T& value);
 
             // PRINT
             std::string string() {
@@ -311,12 +315,10 @@ namespace s21 {
             }
             template< class InputIt >
             iterator insert( const_iterator pos, InputIt first, InputIt last ) {
-                iterator res = pos;
-                for (auto it = first; it != last;) {
-                    it = insert(pos, *it);
-                    res = it;
+                for (auto it = first; it != last; ++it) {
+                    insert(pos, *it);
                 }
-                return res;
+                return pos;
             }
             iterator insert( const_iterator pos, std::initializer_list<T> ilist ) {
                 iterator it = pos;
@@ -332,9 +334,20 @@ namespace s21 {
                 }
             }
             iterator erase(iterator pos) {
-
+                auto prev = pos.index_;
+                for (auto i = pos.index_+1; i < length_; i++) {
+                    data_[prev] = data_[i];
+                    prev = i;
+                }
+                length_--;
+                return pos;
             }
-            iterator erase(iterator first, iterator last);
+            iterator erase(iterator first, iterator last) {
+                for (auto i = first.index_; i < last.index_; i++) {
+                    erase(first);
+                }
+                return first;
+            }
             void push_back(const T& value) {
                 if (data_ == nullptr) {
                     data_ = allocator_.allocate(START_INIT_SIZE);
@@ -348,10 +361,17 @@ namespace s21 {
                 length_++;
             }
             template<class R>
-            constexpr void append_range( R&& rg );      
-            void pop_back();
+            void append_range( R&& rg ) {
+                for (auto it = rg.begin(); it != rg.end(); ++it) {
+                    push_back(*it);
+                }
+            }
+
+            void pop_back() {
+                --length_;
+            }
             void resize(size_type count) {
-                if (count <= capacity_) {
+                if (count < length_) {
                     return;
                 }
                 T* newData = allocator_.allocate(count);
@@ -371,6 +391,9 @@ namespace s21 {
                 capacity_ = count;
             }
             void clip() {
+                if (length_ == 0 ) {
+                    clear();
+                }
                 resize(length_);
             }
             void swap(vector& other) {
