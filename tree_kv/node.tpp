@@ -19,6 +19,11 @@ typename RedBlackTree<Key, T, Compare, Allocator>::key_type RedBlackTree<Key, T,
 }
 
 template <class Key, class T, class Compare, class Allocator>
+typename RedBlackTree<Key, T, Compare, Allocator>::key_type& RedBlackTree<Key, T, Compare, Allocator>::Node::getKeyRef() {
+    return const_cast<key_type&>(data_->first);
+}
+
+template <class Key, class T, class Compare, class Allocator>
 typename RedBlackTree<Key, T, Compare, Allocator>::mapped_value RedBlackTree<Key, T, Compare, Allocator>::Node::getValue() {
     return data_->second;
 }

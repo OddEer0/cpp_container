@@ -115,12 +115,9 @@ namespace s21 {
             reference operator*() {
                 return *current_->value_;
             };
-            T* operator->();
-
-            void start();
-            void end();
-            Iterator first();
-            Iterator last();
+            T* operator->() {
+                return *(*current_->value_);
+            }
         };
 
         using iterator = Iterator;

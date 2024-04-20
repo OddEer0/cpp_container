@@ -186,28 +186,10 @@ namespace s21 {
             tree_.swap(other.tree_);
         }
 
-        // Слияние двух деревьев
-        // void merge(RedBlackTree& other);
-
         // LOOKUP
-        // Поиск элемента с заданным ключом
-        // iterator find(const key_type& key);
-        // const_iterator find(const key_type& key) const;
         bool contains(value_type value) {
             return tree_.contains(value);
         }
-
-        // // Возвращает диапазон элементов с заданным ключом
-        // std::pair<iterator, iterator> equal_range(const key_type& key);
-        // std::pair<const_iterator, const_iterator> equal_range(const key_type& key) const;
-
-        // // Возвращает итератор на первый элемент не меньше заданного ключа
-        // iterator lower_bound(const key_type& key);
-        // const_iterator lower_bound(const key_type& key) const;
-
-        // // Возвращает итератор на первый элемент больше заданного ключа
-        // iterator upper_bound(const key_type& key);
-        // const_iterator upper_bound(const key_type& key) const;
 
         // CAPACITY
         bool empty() {
@@ -222,19 +204,21 @@ namespace s21 {
 
 
         // ELEMENT ACCESS
-        value_type at(value_type value) {
+        value_type& at(value_type value) {
             node_type node = tree_.getNode(value);
             if (node == nullptr) {
                 throw std::out_of_range("value not found in value");
             }
-            return node->getKey();
+            return node->getKeyRef();
         }
-        value_type operator[](value_type value) {
+        value_type& operator[](value_type value) {
             node_type node = tree_.getNode(value);
             if (node == nullptr) {
-                return value_type();
+                value_type val = value_type();
+                auto res = tree_.insert(std::make_pair(value, val));
+                return res.first->getKeyRef();
             }
-            return node->getKey();
+            return node->getKeyRef();
         }
 
 

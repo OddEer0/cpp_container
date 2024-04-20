@@ -15,9 +15,13 @@ TEST(SetElementAccess, operator_square) {
 TEST(SetElementAccess, operator_square_create_new_elem_defined_elem) {
     s21::set<int> data = initSet();
 
-    auto res = data[10000];
-    ASSERT_EQ(res, 0);
-    ASSERT_EQ(data.size(), 13);
+    auto res = data[10000]; // add new element 10000
+    ASSERT_EQ(res, 10000);
+    ASSERT_EQ(data.size(), 14);
+    data[10000] = 5500; // update
+    res = data[5500];
+    ASSERT_EQ(res, 5500);
+    ASSERT_EQ(data.size(), 14);
 }
 
 TEST(SetElementAccess, operator_at) {

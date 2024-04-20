@@ -76,7 +76,7 @@ namespace s21 {
         mapped_value &at(key_type key) {
             return tree_.at(key);
         }
-        mapped_value operator[](key_type key) {
+        mapped_value &operator[](key_type key) {
             return tree_[key];
         }
 

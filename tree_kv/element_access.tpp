@@ -1,10 +1,10 @@
 template <class Key, class T, class Compare, class Allocator>
-typename RedBlackTree<Key, T, Compare, Allocator>::mapped_value RedBlackTree<Key, T, Compare, Allocator>::operator[](key_type key) {
+typename RedBlackTree<Key, T, Compare, Allocator>::mapped_value& RedBlackTree<Key, T, Compare, Allocator>::operator[](key_type key) {
     node_type node = getNode(key);
     if (node == nullptr) {
         mapped_value value = mapped_value();
-        insert(std::make_pair(key, value));
-        return value;
+        auto res = insert(std::make_pair(key, value));
+        return res.first->data_->second;
     }
     return node->data_->second;
 }

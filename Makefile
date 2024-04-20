@@ -11,11 +11,18 @@ leak:
 	valgrind --leak-check=full ./testing
 
 clean:
-	rm -rf *.a *.o testing tree_main test
+	rm -rf *.a *.o testing tree_main test examss
 
 main:
 	$(CC) $(CPPFLAGS) main.cpp -o tree_main
 	./tree_main
 
-tree_leak:
+main_leak:
 	valgrind --leak-check=full ./tree_main
+
+exam:
+	$(CC) $(CPPFLAGS) ./example/*.cpp -o examss
+	./examss
+
+exam_leak:
+	valgrind --leak-check=full ./examss

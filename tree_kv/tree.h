@@ -45,6 +45,7 @@ namespace s21 {
             Node() : color_(BLACK) {};
             Node(std::pair<const key_type, mapped_value>* data) : data_(data), color_(RED), parent_(nullptr), left_(nullptr), right_(nullptr) {};
             key_type getKey();
+            key_type& getKeyRef();
             mapped_value getValue();
             node_type getLeft();
             node_type getRight();
@@ -148,7 +149,7 @@ namespace s21 {
 
         // ELEMENT ACCESS
         mapped_value &at(key_type key);
-        mapped_value operator[](key_type key);
+        mapped_value &operator[](key_type key);
 
         // ITERATOR
         node_type right();
