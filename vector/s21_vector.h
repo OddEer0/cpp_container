@@ -100,9 +100,11 @@ namespace s21 {
                 return prev();
             }
             reference operator*() {
-                return vector_->at(index_);
+                return vector_->data_[index_];
             };
-            T* operator->();
+            T* operator->() {
+                return *vector_->data_[index_];
+            };
         };
 
         using iterator = Iterator;

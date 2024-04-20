@@ -4,6 +4,7 @@
 #include "list/s21_list.h"
 #include "queue/s21_queue.h"
 #include "stack/s21_stack.h"
+#include "array/s21_array.h"
 #include "vector/s21_vector.h"
 #include "map/s21_map.h"
 #include "set/s21_set.h"
